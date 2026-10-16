@@ -3,6 +3,7 @@
   PROTOTYPE, throwaway. Answers "How does the Transactions list work?" (issue #6).
   Three structurally different Transactions pages on prototype G's look and navigation A, with 250 generated Transactions:
     A  Day boxes: search and filter buttons, a box per day, select by checkbox, scroll loads more. A row opens the editor.
+       On phones, C's Filters button and sheet (round 1 pick: A, with C's phone filters).
     B  Table and pane: one search box with qualifiers (account:, tag:, kind:, amount:>), a sortable table, numbered pages,
        and a side pane showing the selected Transaction.
     C  Months and facets: a filter rail with counts, a ledger grouped by month with In / Out totals,
@@ -740,9 +741,8 @@ function variantA() {
     <div class="toolbar"><label class="search">${ic("search")}<input data-k="q" placeholder="Search Party, note, Account, Tag or amount" value="${esc(state.f.q)}"><kbd>/</kbd></label>${filterBtn("accts", "Account")}${filterBtn("parties", "Party")}${filterBtn("tags", "Tag")}${filterBtn("kinds", "Kind")}${filterBtn("date", "Date")}${filterBtn("amount", "Amount")}</div>
     ${chipsRow()}${bulkBar(list, shown)}${anyFilter() ? summaryLine(list) : ""}${list.length ? days.map(box).join("") + more : emptyState()}`);
   const mdays = groupDays(shown).map((d) => { const [l, rel] = dayLabel(d.date), s = summary(d.txs); return `<div class="msec"><span>${rel || l}</span><span class="r">${s.spent ? short(s.spent) + " spent" : ""}</span></div><div class="mcard">${d.txs.map((t) => mrow(t)).join("")}</div>`; }).join("");
-  const mchip = (key, label) => { const n = key === "date" ? +!!(state.f.from || state.f.to) : key === "amount" ? +(state.f.min !== "" || state.f.max !== "") : state.f[key].length; return `<span class="rel" style="flex:none"><button class="mchip ${n ? "on" : ""}" data-pop="${key}">${label}${n > 1 ? ` ${n}` : ""}${ic("chevron-down")}</button></span>`; };
-  const mpop = state.pop ? filterPop(state.pop) : "";
-  const mob = mobChrome(`<label class="msearch">${ic("search")}<input data-k="q" placeholder="Search" value="${esc(state.f.q)}"></label><div class="mchips">${anyFilter() ? `<button class="mchip" data-clearall>${ic("x")}Clear</button>` : ""}${mchip("accts", "Account")}${mchip("parties", "Party")}${mchip("tags", "Tag")}${mchip("kinds", "Kind")}${mchip("date", "Date")}${mchip("amount", "Amount")}</div>${list.length ? mdays + more : emptyState()}${mpop}`);
+  const { bar, sheet } = mobFilters(false);
+  const mob = mobChrome(`<label class="msearch">${ic("search")}<input data-k="q" placeholder="Search" value="${esc(state.f.q)}"></label>${bar}${list.length ? mdays + more : emptyState()}${sheet}`);
   return desk + mob;
 }
 
@@ -801,8 +801,14 @@ function mobDetail(t) {
     <div class="msec"></div><div class="mcard"><button class="mrow" data-act="schedule" style="color:var(--accent)">Make a Schedule from this</button><button class="mrow" data-act="delone" style="color:var(--bad)">Delete Transaction</button></div></div>`;
 }
 
+function mobFilters(search) {
+  const nf = activeChips().length;
+  const sheet = state.mFilters ? `<div class="scrim" data-mfilters></div><div class="pop" style="overflow-y:auto"><div class="ptop"><span>Filters</span><button data-mfilters>Done</button></div><div style="padding:12px 16px;display:flex;flex-direction:column;gap:16px" class="rail">${railHtml(search)}</div></div>` : "";
+  return { bar: `<div class="mchips"><button class="mchip ${nf ? "on" : ""}" data-mfilters>${ic("sliders-horizontal")}Filters${nf ? ` ${nf}` : ""}</button>${activeChips().map(([k, v, n]) => `<button class="mchip" data-unchip="${k}:${v}">${esc(n)}${ic("x")}</button>`).join("")}</div>`, sheet };
+}
+
 // ---------- C: months and facets ----------
-function railHtml() {
+function railHtml(search = true) {
   const f = state.f;
   const facet = (key, val, name, extra = "") => { const n = facetCount(key, val), on = f[key].includes(val); return `<button class="facet ${!n && !on ? "zero" : ""}" data-fopt="${key}:${val}"><input type="checkbox" ${on ? "checked" : ""} tabindex="-1">${extra}<span class="n">${esc(name)}</span><span class="c">${n}</span></button>`; };
   const group = (key, label, entries, limit = 6) => {
@@ -810,11 +816,12 @@ function railHtml() {
     const all = state.showAll[key], vis = all ? ranked : ranked.slice(0, limit);
     return `<div><h4><span>${label}</span>${f[key].length ? `<button data-clearf="${key}">Clear</button>` : ""}</h4>${vis.map(([v, n]) => facet(key, v, n)).join("")}${ranked.length > limit ? `<button class="facet" data-showall="${key}" style="color:var(--accent)">${all ? "Show fewer" : `Show all ${ranked.length}`}</button>` : ""}</div>`;
   };
-  return `<label class="search" style="flex:none">${ic("search")}<input data-k="q" placeholder="Search" value="${esc(f.q)}"></label>
+  return `${search ? `<label class="search" style="flex:none">${ic("search")}<input data-k="q" placeholder="Search" value="${esc(f.q)}"></label>` : ""}
     ${group("kinds", "Kind", Object.entries(TX_T), 4)}
     ${group("accts", "Account", Object.keys(ACC).map((id) => [id, ACC[id].n]))}
     ${group("tags", "Tag", Object.entries(TAGS))}
     ${group("parties", "Party", Object.entries(PARTY))}
+    <div><h4><span>Date</span>${f.from || f.to ? `<button data-clearf="date">Clear</button>` : ""}</h4><div class="presets" style="display:flex;flex-wrap:wrap;gap:6px">${Object.keys(PRESETS).map((p) => `<button class="btn ${(f.from || f.to) && dateLabel(f) === p ? "on" : ""}" data-preset="${p}" style="height:28px;font-size:13px">${p}</button>`).join("")}</div></div>
     <div><h4><span>Amount</span>${f.min !== "" || f.max !== "" ? `<button data-clearf="amount">Clear</button>` : ""}</h4><div class="row2" style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><input class="input amt" inputmode="decimal" data-k="min" value="${f.min}" placeholder="Min"><input class="input amt" inputmode="decimal" data-k="max" value="${f.max}" placeholder="Max"></div></div>
     ${anyFilter() ? `<button class="btn" data-clearall>Clear all filters</button>` : ""}`;
 }
@@ -840,9 +847,8 @@ function variantC() {
   const load = next ? `<div class="loadm"><button class="btn" data-moremonth>${ic("chevrons-down")}Show ${monthName(next.k)}<span class="muted">${next.txs.length}</span></button></div>` : list.length ? `<div class="more">That's everything${anyFilter() ? " that matches" : ""}.</div>` : "";
   const desk = chrome(`<div class="ph"><h1>Transactions</h1>${selMode ? "" : `<span class="hint">Tick a row to start selecting</span>`}</div><div class="cgrid"><aside class="rail">${railHtml()}</aside><div>${chipsRow()}${bulkBar(list, shown.flatMap((m) => m.txs))}${list.length ? shown.map(monthBlock).join("") + load : emptyState()}</div></div>`);
   const mrows = (m) => m.txs.map((t) => mrow(t, { date: true }) + (state.open.has(t.id) && !state.mSelect ? `<div class="mexp">${t.splits.map((s) => `<div class="sp"><span>${ACC[s.from].n} → ${ACC[s.to].n}${s.tags.length ? ", " + s.tags.map((x) => TAGS[x]).join(", ") : ""}</span><span class="num">${money(s.amt)}</span></div>`).join("")}<div style="display:flex;gap:8px"><button class="btn" data-edit="${t.id}">Edit</button>${t.files.length ? `<span class="muted" style="display:flex;gap:4px;align-items:center">${ic("paperclip")}${t.files[0]}</span>` : ""}</div></div>` : "")).join("");
-  const nf = activeChips().length;
-  const sheet = state.mFilters ? `<div class="scrim" data-mfilters></div><div class="pop" style="overflow-y:auto"><div class="ptop"><span>Filters</span><button data-mfilters>Done</button></div><div style="padding:12px 16px;display:flex;flex-direction:column;gap:16px" class="rail">${railHtml()}</div></div>` : "";
-  const mob = mobChrome(`<div class="mchips"><button class="mchip ${nf ? "on" : ""}" data-mfilters>${ic("sliders-horizontal")}Filters${nf ? ` ${nf}` : ""}</button>${activeChips().map(([k, v, n]) => `<button class="mchip" data-unchip="${k}:${v}">${esc(n)}${ic("x")}</button>`).join("")}</div>${list.length ? shown.map((m) => { const s = summary(m.txs); return `<div class="mmonth"><h2>${monthName(m.k).split(" ")[0]}</h2><div class="stats">Spent ${short(s.spent)}<br>Received ${short(s.rec)}</div></div><div class="mcard">${mrows(m)}</div>`; }).join("") + (next ? `<div class="loadm"><button class="btn" data-moremonth>Show ${monthName(next.k)}</button></div>` : "") : emptyState()}${sheet}`);
+  const { bar, sheet } = mobFilters(true);
+  const mob = mobChrome(`${bar}${list.length ? shown.map((m) => { const s = summary(m.txs); return `<div class="mmonth"><h2>${monthName(m.k).split(" ")[0]}</h2><div class="stats">Spent ${short(s.spent)}<br>Received ${short(s.rec)}</div></div><div class="mcard">${mrows(m)}</div>`; }).join("") + (next ? `<div class="loadm"><button class="btn" data-moremonth>Show ${monthName(next.k)}</button></div>` : "") : emptyState()}${sheet}`);
   return desk + mob;
 }
 
