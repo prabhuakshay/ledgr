@@ -80,6 +80,18 @@ _Avoid_: Receipt, document, file
 A stored file no Attachment points to any more, left behind when deleting it from storage failed for good or a crash interrupted an upload. It only wastes storage; nothing in ledgr can reach it.
 _Avoid_: Orphan, stray file, leaked file
 
+**Account Import**:
+A file of what a bank or card issuer recorded on one Asset or Liability Account, such as a bank's spreadsheet download or a card's PDF statement, that the user uploads so its Import Rows can be matched to Transactions or turned into them. It can also tell ledgr the Account's closing balance or a Statement's actual Statement Amount.
+_Avoid_: Bank statement, statement upload, upload, feed
+
+**Import Row**:
+One dated amount into or out of the Account in an Account Import, with its narration, exactly as the bank or issuer wrote it. It is not a Transaction until it is matched to one or turned into one.
+_Avoid_: Line, entry, bank transaction
+
+**Import Rule**:
+A saved instruction the user keeps that fills in the Party, Account and Tags for any Import Row it matches. It applies only to Import Rows, never to Quick Adds or Transactions entered by hand.
+_Avoid_: Rule (on its own), mapping, autofill, filter
+
 **Quick Add**:
 A short line of free text the user writes about a money event, such as "lunch at Toit 850 on hdfc card", which an AI reads to propose a Draft. Every Quick Add is Processing, Draft (its Draft awaits the user), Failed, Posted or Discarded. The user sees only the Drafts inbox: a Quick Add still Processing or Failed shows there as a row, and once read it is its Draft.
 _Avoid_: Prompt, quick entry, note
