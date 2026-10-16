@@ -24,6 +24,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
+/* Navigation and tabs show hover with a background; only text links underline. */
+.unav a:hover, .B-nav a:hover, .E-nav a:hover, .M-tabs a:hover, .F-tabs a:hover, .mt a:hover, .btn:hover { text-decoration: none; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; border-radius: 6px; }
 svg.lucide { width: 16px; height: 16px; stroke-width: 1.75; flex: none; }
@@ -133,7 +135,7 @@ body {
 .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--muted-bg); border: 1px solid var(--border); display: grid; place-items: center; color: var(--muted); flex: none; }
 .wrap { max-width: 1280px; margin: 0 auto; padding: 24px; }
 
-.unav { display: flex; gap: 8px; padding: 0 24px; border-bottom: 1px solid var(--border); background: var(--subtle); overflow-x: auto; scrollbar-width: none; }
+.unav { isolation: isolate; display: flex; gap: 8px; padding: 0 24px; border-bottom: 1px solid var(--border); background: var(--subtle); overflow-x: auto; scrollbar-width: none; }
 .unav a { flex: none; display: flex; align-items: center; gap: 8px; padding: 0 8px; height: 48px; color: var(--fg); white-space: nowrap; border-bottom: 2px solid transparent; position: relative; }
 .unav a:hover { text-decoration: none; }
 .unav a:hover::before { content: ""; position: absolute; inset: 8px 0; background: var(--btn-hover); border-radius: 6px; z-index: -1; }
@@ -285,6 +287,107 @@ body {
 .F-tabs .plus span { width: 40px; height: 32px; border-radius: 8px; background: var(--primary); color: #fff; display: grid; place-items: center; }
 .sheet { position: fixed; z-index: 41; left: 50%; bottom: 0; transform: translateX(-50%); width: min(600px, 100%); max-height: calc(100vh - 60px); display: flex; flex-direction: column; background: var(--bg); border-radius: 12px 12px 0 0; box-shadow: var(--overlay-shadow); }
 
+/* ================= G: Combined (A + B + C on desktop, native app on phones) ================= */
+/* Desktop and phone get separate trees: a native app shell and a desktop page disagree on too much to share one. */
+.G-mob, .G-sheet, .G-scrim { display: none; }
+.G-desk { display: block; }
+.G-shell { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 32px; max-width: 1360px; margin: 0 auto; padding: 24px; }
+.G-nav { position: sticky; top: 64px; align-self: start; }
+.G-unav { display: none; }
+.G-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 12px; margin-bottom: 16px; border-bottom: 1px solid var(--border-muted); }
+.G-head h1 { margin: 0; font-size: 24px; font-weight: 400; }
+.G-head .muted { margin-left: 8px; font-size: 14px; }
+.G-stats { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.G-stat { padding: 16px; display: flex; flex-direction: column; }
+.G-stat .l { color: var(--muted); font-size: 12px; display: flex; gap: 6px; align-items: center; }
+.G-stat .v { font-size: 24px; font-weight: 600; margin-top: 4px; }
+.G-stat .s { font-size: 12px; color: var(--muted); }
+.G-stat .chart { height: 36px; margin-top: auto; padding-top: 8px; }
+.G-split { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; }
+.G-split h2 { font-size: 16px; font-weight: 600; margin: 0 0 12px; display: flex; justify-content: space-between; align-items: center; }
+.G-side .box { margin-bottom: 16px; }
+.G-acct { display: flex; align-items: center; gap: 8px; padding: 7px 16px; border-top: 1px solid var(--border-muted); }
+.G-acct .n { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.G-acct svg { color: var(--muted); }
+.G-grp { display: flex; justify-content: space-between; padding: 8px 16px; font-size: 12px; font-weight: 600; color: var(--muted); background: var(--subtle); border-top: 1px solid var(--border-muted); }
+.G-grp:first-of-type { border-top: 0; }
+@media (max-width: 1100px) {
+  .G-shell { grid-template-columns: 1fr; padding-top: 16px; }
+  .G-nav { display: none; }
+  .G-unav { display: flex; }
+  .G-split { grid-template-columns: 1fr; }
+  .G-side { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; order: -1; }
+  .G-side .box { margin: 0; }
+}
+
+/* Phone: a native app shell. Grouped inset lists, large title, bottom tabs, sheets, 44px touch targets. */
+@media (max-width: 760px) {
+  body[data-variant="G"] { --page: light-dark(#f2f4f7, #000000); --card: light-dark(#ffffff, #0d1117); background: var(--page); padding-bottom: calc(76px + env(safe-area-inset-bottom)); -webkit-tap-highlight-color: transparent; }
+  body[data-variant="G"] .G-desk, body[data-variant="G"] .dialog, body[data-variant="G"] .dialog-bg:not(.G-scrim) { display: none; }
+  .G-mob { display: block; }
+  .G-sheet { display: flex; }
+  .G-scrim { display: block; }
+}
+.M-bar { position: sticky; top: 40px; z-index: 20; display: flex; align-items: center; justify-content: space-between; height: 52px; padding: 0 16px; background: var(--page); }
+.M-bar .r { display: flex; gap: 6px; }
+.M-ib { position: relative; width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--card); display: grid; place-items: center; color: var(--fg); }
+.M-ib b { position: absolute; top: 2px; right: 2px; min-width: 16px; height: 16px; border-radius: 8px; background: var(--primary); color: #fff; font-size: 10px; line-height: 16px; text-align: center; padding: 0 4px; }
+.M-title { padding: 2px 20px 14px; }
+.M-title h1 { margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+.M-title div { color: var(--muted); font-size: 14px; margin-top: 2px; }
+.M-sec { display: flex; justify-content: space-between; align-items: baseline; padding: 20px 20px 8px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.M-sec a { font-weight: 500; }
+.M-card { margin: 0 16px; background: var(--card); border-radius: 14px; border: 1px solid light-dark(transparent, var(--border-muted)); overflow: hidden; box-shadow: light-dark(0 1px 2px rgba(31,35,40,.06), none); }
+.M-nw { padding: 16px; }
+.M-nw .l { color: var(--muted); font-size: 13px; font-weight: 600; }
+.M-nw .v { font-size: 34px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; margin: 2px 0; }
+.M-nw .chart { height: 52px; margin-top: 12px; }
+.M-pair { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--border-muted); }
+.M-pair > div { padding: 12px 16px; }
+.M-pair > div + div { border-left: 1px solid var(--border-muted); }
+.M-pair .l { color: var(--muted); font-size: 12px; }
+.M-pair .num { font-size: 17px; font-weight: 600; }
+.M-row { display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 16px; position: relative; }
+.M-row + .M-row::before { content: ""; position: absolute; top: 0; right: 0; left: 60px; border-top: 1px solid var(--border-muted); }
+.M-row:active { background: var(--subtle); }
+.M-row .ic { width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; color: #fff; background: var(--hue); flex: none; }
+.M-row .ic.round { border-radius: 50%; }
+.M-row .main { flex: 1; min-width: 0; }
+.M-row .main .t { font-size: 15px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.M-row .main .s { color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.M-row .num { font-size: 15px; font-weight: 500; }
+.M-row > svg:last-child { color: var(--muted); opacity: .6; }
+.M-row .progress { height: 4px; margin-top: 6px; }
+.M-grp { padding: 8px 16px; font-size: 12px; font-weight: 600; color: var(--muted); background: var(--subtle); display: flex; justify-content: space-between; border-top: 1px solid var(--border-muted); }
+.M-tabs { position: fixed; z-index: 30; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(5, 1fr); align-items: end; padding: 6px 4px calc(8px + env(safe-area-inset-bottom)); background: var(--card); border-top: 1px solid var(--border); }
+body[data-variant="G"] .M-tabs { display: none; }
+@media (max-width: 760px) { body[data-variant="G"] .M-tabs { display: grid; } }
+.M-tabs a, .M-tabs button { display: flex; flex-direction: column; align-items: center; gap: 3px; min-height: 48px; justify-content: center; font-size: 11px; font-weight: 500; color: var(--muted); border: 0; background: none; }
+.M-tabs a:hover { text-decoration: none; }
+.M-tabs a.on { color: var(--fg); font-weight: 600; }
+.M-tabs a svg { width: 22px; height: 22px; }
+.M-tabs .plus span { width: 52px; height: 52px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; margin-top: -18px; box-shadow: 0 4px 12px light-dark(rgba(31,136,61,.35), rgba(0,0,0,.6)); }
+.M-tabs .plus svg { width: 24px; height: 24px; }
+.G-sheet { position: fixed; z-index: 41; left: 0; right: 0; bottom: 0; max-height: 94vh; flex-direction: column; background: var(--page); border-top: 1px solid var(--border); border-radius: 14px 14px 0 0; box-shadow: var(--overlay-shadow); padding-bottom: env(safe-area-inset-bottom); }
+.G-sheet .grab { width: 36px; height: 5px; border-radius: 3px; background: var(--border); margin: 6px auto 0; }
+.G-sheet .sh { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 48px; padding: 0 8px; }
+.G-sheet .sh button { border: 0; background: none; font-size: 16px; color: var(--accent); padding: 8px; min-height: 44px; }
+.G-sheet .sh button:first-child { justify-self: start; }
+.G-sheet .sh button:last-child { justify-self: end; font-weight: 600; }
+.G-sheet .sh h3 { margin: 0; font-size: 16px; font-weight: 600; }
+.G-sheet .sb { overflow-y: auto; padding: 4px 0 24px; }
+.G-sheet .amt { display: flex; justify-content: center; align-items: baseline; gap: 4px; padding: 12px 16px 16px; }
+.G-sheet .amt span { font-size: 28px; color: var(--muted); font-weight: 500; }
+.G-sheet .amt input { width: 240px; border: 0; background: transparent; font-size: 44px; font-weight: 700; letter-spacing: -0.02em; text-align: center; color: var(--fg); padding: 0; }
+.G-sheet .amt input:focus { outline: none; }
+.G-sheet .segc { margin: 0 16px 16px; height: 36px; border-radius: 9px; }
+.G-sheet .segc button { height: 30px; border-radius: 7px; font-size: 14px; }
+.G-sheet .M-row label { flex: none; width: 72px; font-size: 15px; }
+.G-sheet .M-row .val { flex: 1; text-align: right; border: 0; background: transparent; font-size: 15px; color: var(--muted); padding: 0; height: 40px; direction: ltr; }
+.G-sheet .M-row select.val { text-align-last: right; appearance: none; -webkit-appearance: none; }
+.G-sheet .M-row .val:focus { outline: none; color: var(--fg); }
+.G-sheet .M-row + .M-row::before { left: 16px; }
+
 /* Phones: header search and secondary controls go; dialogs become bottom sheets. */
 @media (max-width: 760px) {
   .hdr { padding: 0 16px; gap: 12px; height: 56px; }
@@ -309,12 +412,12 @@ body { padding-top: 40px; }
 <div class="proto" id="proto"></div>
 <div id="app"></div>
 <script>
-const VARIANTS = { A: "Repository", B: "Settings", C: "Dashboard", D: "Table", E: "Insights", F: "Mobile app" };
+const VARIANTS = { G: "Combined", A: "Repository", B: "Settings", C: "Dashboard", D: "Table", E: "Insights", F: "Mobile app" };
 const LOGO = `<svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 18.00 194.40 67.30" role="img" aria-label="ledgr"><title>ledgr</title><g transform="translate(-17.6 10) scale(.8)"><path fill="currentColor" fill-rule="evenodd" d="M22 18A8 8 0 0 1 30 10H70A8 8 0 0 1 78 18V90L71 84L64 90L57 84L50 90L43 84L36 90L29 84L22 90ZM36 25H64A3 3 0 0 1 67 28V28A3 3 0 0 1 64 31H36A3 3 0 0 1 33 28V28A3 3 0 0 1 36 25ZM36 38H54A3 3 0 0 1 57 41V41A3 3 0 0 1 54 44H36A3 3 0 0 1 33 41V41A3 3 0 0 1 36 38Z"/><path fill="var(--brand-green)" d="M37 57H63A4 4 0 0 1 67 61V61A4 4 0 0 1 63 65H37A4 4 0 0 1 33 61V61A4 4 0 0 1 37 57Z"/></g><g transform="translate(54.0 70)"><path fill="currentColor" d="M4.80 0.00L4.80 -44.10L12.96 -44.10L12.96 0.00L4.80 0.00Z"/><path fill="currentColor" d="M34.02 0.90Q29.04 0.90 25.24 -1.24Q21.45 -3.39 19.30 -7.15Q17.16 -10.92 17.16 -15.78Q17.16 -21.09 19.26 -25.02Q21.36 -28.95 25.05 -31.12Q28.74 -33.30 33.54 -33.30Q38.64 -33.30 42.21 -30.90Q45.78 -28.50 47.49 -24.15Q49.20 -19.80 48.69 -13.92L40.62 -13.92L40.62 -16.92Q40.62 -21.87 39.05 -24.04Q37.47 -26.22 33.90 -26.22Q29.73 -26.22 27.77 -23.68Q25.80 -21.15 25.80 -16.20Q25.80 -11.67 27.77 -9.20Q29.73 -6.72 33.54 -6.72Q35.94 -6.72 37.65 -7.77Q39.36 -8.82 40.26 -10.80L48.42 -8.46Q46.59 -4.02 42.64 -1.56Q38.70 0.90 34.02 0.90ZM23.28 -13.92L23.28 -19.98L44.76 -19.98L44.76 -13.92L23.28 -13.92Z"/><path fill="currentColor" d="M65.58 0.90Q61.11 0.90 57.75 -1.35Q54.39 -3.60 52.52 -7.47Q50.64 -11.34 50.64 -16.20Q50.64 -21.15 52.54 -25.00Q54.45 -28.86 57.90 -31.08Q61.35 -33.30 66.00 -33.30Q70.62 -33.30 73.77 -31.05Q76.92 -28.80 78.54 -24.93Q80.16 -21.06 80.16 -16.20Q80.16 -11.34 78.52 -7.47Q76.89 -3.60 73.65 -1.35Q70.41 0.90 65.58 0.90ZM66.90 -6.36Q69.63 -6.36 71.27 -7.59Q72.90 -8.82 73.62 -11.04Q74.34 -13.26 74.34 -16.20Q74.34 -19.14 73.62 -21.36Q72.90 -23.58 71.33 -24.81Q69.75 -26.04 67.20 -26.04Q64.47 -26.04 62.71 -24.70Q60.96 -23.37 60.12 -21.13Q59.28 -18.90 59.28 -16.20Q59.28 -13.47 60.09 -11.23Q60.90 -9.00 62.58 -7.68Q64.26 -6.36 66.90 -6.36ZM74.34 0.00L74.34 -22.20L73.32 -22.20L73.32 -43.20L81.54 -43.20L81.54 0.00L74.34 0.00Z"/><path fill="var(--brand-green)" d="M100.80 15.30Q98.04 15.30 95.55 14.41Q93.06 13.53 91.09 11.96Q89.13 10.38 87.90 8.28L95.46 4.62Q96.24 6.06 97.69 6.81Q99.15 7.56 100.86 7.56Q102.69 7.56 104.31 6.94Q105.93 6.33 106.91 5.12Q107.88 3.90 107.82 2.10L107.82 -7.32L108.84 -7.32L108.84 -32.40L115.98 -32.40L115.98 2.22Q115.98 3.42 115.88 4.48Q115.77 5.55 115.50 6.60Q114.72 9.57 112.60 11.49Q110.49 13.41 107.43 14.35Q104.37 15.30 100.80 15.30ZM100.08 0.90Q95.61 0.90 92.25 -1.35Q88.89 -3.60 87.02 -7.47Q85.14 -11.34 85.14 -16.20Q85.14 -21.15 87.05 -25.00Q88.95 -28.86 92.40 -31.08Q95.85 -33.30 100.50 -33.30Q105.12 -33.30 108.27 -31.05Q111.42 -28.80 113.04 -24.93Q114.66 -21.06 114.66 -16.20Q114.66 -11.34 113.02 -7.47Q111.39 -3.60 108.15 -1.35Q104.91 0.90 100.08 0.90ZM101.40 -6.36Q104.13 -6.36 105.77 -7.59Q107.40 -8.82 108.12 -11.04Q108.84 -13.26 108.84 -16.20Q108.84 -19.14 108.12 -21.36Q107.40 -23.58 105.83 -24.81Q104.25 -26.04 101.70 -26.04Q98.97 -26.04 97.22 -24.70Q95.46 -23.37 94.62 -21.13Q93.78 -18.90 93.78 -16.20Q93.78 -13.47 94.59 -11.23Q95.40 -9.00 97.08 -7.68Q98.76 -6.36 101.40 -6.36Z"/><path fill="currentColor" d="M121.38 0.00L121.38 -32.40L128.58 -32.40L128.58 -24.48L127.80 -25.50Q128.43 -27.18 129.48 -28.56Q130.53 -29.94 132.06 -30.84Q133.23 -31.56 134.61 -31.96Q135.99 -32.37 137.46 -32.48Q138.93 -32.58 140.40 -32.40L140.40 -24.78Q139.05 -25.20 137.26 -25.06Q135.48 -24.93 134.04 -24.24Q132.60 -23.58 131.61 -22.48Q130.62 -21.39 130.11 -19.90Q129.60 -18.42 129.60 -16.56L129.60 0.00L121.38 0.00Z"/></g></svg>`;
 
 const params = new URLSearchParams(location.search);
 const state = {
-  variant: VARIANTS[params.get("variant")] ? params.get("variant") : "A",
+  variant: VARIANTS[params.get("variant")] ? params.get("variant") : "G",
   theme: params.get("theme") || "system",
   privacy: params.get("privacy") === "1",
   numfmt: params.get("numfmt") === "intl" ? "intl" : "indian",
@@ -628,6 +731,96 @@ function renderF() {
   </nav>${dialog("sheet")}`;
 }
 
+// ================= G: Combined =================
+function renderG() {
+  const groups = [["Overview", [["Home", "layout-grid"], ["Transactions", "arrow-left-right", 248], ["Drafts", "inbox", 3]]], ["Money", [["Accounts", "landmark", 8], ["Budgets", "pie-chart"], ["Investments", "trending-up"], ["Goals", "target"]]], ["ledgr", [["Settings", "settings"], ["Export", "download"]]]];
+  const verb = (t) => t.kind === "income" ? "Received from" : t.party ? (t.kind === "liability" ? "Charged at" : "Paid") : "Paid off";
+  const acctLi = (a) => `<div class="G-acct">${ic(a.icon)}<span class="n">${a.name}</span>${accAmt(a, { paise: false })}</div>`;
+  const hueAcct = (a) => a.kind === "liability" ? "#8250df" : a.icon === "trending-up" ? "#0969da" : a.icon === "home" ? "#9a6700" : "#1a7f37";
+  const upcoming = [
+    { icon: "inbox", hue: "#bc4c00", t: "3 Drafts to review", s: "From Quick Add", count: 3 },
+    { icon: "credit-card", hue: "#8250df", t: "HDFC Regalia bill due", s: `22 Oct · ${amount(42816.4, { role: "liability", paise: false })}` },
+    { icon: "utensils", hue: "#d1242f", t: "Eating out is over Budget", s: `by ${amount(1120, { paise: false })}` },
+  ];
+
+  const desk = `<div class="G-desk">
+    ${header("Home")}
+    <nav class="unav G-unav">${NAV.map(([n, i, c], k) => `<a href="#" class="${k ? "" : "on"}">${ic(i)}${n}${c ? `<span class="counter">${c}</span>` : ""}</a>`).join("")}</nav>
+    <div class="G-shell">
+      <nav class="B-nav G-nav">${groups.map(([h, items]) => `<h4>${h}</h4>${items.map(([n, i, c]) => `<a href="#" class="${n === "Home" ? "on" : ""}">${ic(i)}${n}${c ? `<span class="counter">${c}</span>` : ""}</a>`).join("")}`).join("")}</nav>
+      <main>
+        <div class="G-head"><h1>Home<span class="muted">Friday, 16 October</span></h1><button class="btn">${ic("calendar")} October ${ic("chevron-down")}</button></div>
+        <div class="G-stats">
+          <div class="box G-stat"><div class="l">${ic("scale")} Net Worth</div><div class="v">${amount(netWorth)}</div><div class="s">${delta()}</div>${chart(400, 36)}</div>
+          <div class="box G-stat"><div class="l">${ic("arrow-up-right")} Spent in October</div><div class="v">${amount(month.spent, { paise: false })}</div><div class="s">${month.count} Transactions</div></div>
+          <div class="box G-stat"><div class="l">${ic("arrow-down-left")} Received in October</div><div class="v">${amount(month.received, { paise: false })}</div><div class="s">${amount(month.received - month.spent, { paise: false })} kept</div></div>
+        </div>
+        <div class="G-split">
+          <section class="C-feed">
+            <h2>Activity <a href="#" style="font-size:14px;font-weight:400">View all Transactions</a></h2>
+            <div class="C-tl">
+            ${byDay(txns).map(([d, ts]) => `<div class="C-day">${d}</div>${ts.map((t) => `<div class="C-ev"><span class="oct">${ic(exp(t.to).icon)}</span><div class="box"><div class="main"><div>${verb(t)} <b>${txWho(t)}</b></div><div class="s">${label(t.to)} <span style="margin-left:6px">${txSub(t)}</span></div></div>${txAmt(t)}</div></div>`).join("")}`).join("")}
+            </div>
+          </section>
+          <aside class="G-side">
+            <div class="box"><div class="box-h"><h3>Needs attention</h3><span class="counter">3</span></div>
+              ${upcoming.map((u) => `<div class="C-up">${ic(u.icon)}<div><div>${u.t}</div><div class="s">${u.s}</div></div></div>`).join("")}</div>
+            <div class="box"><div class="box-h"><h3>Accounts</h3><a href="#">Manage</a></div>
+              <div class="G-grp"><span>Assets</span>${amount(sum(assets), { paise: false })}</div>${assets.map(acctLi).join("")}
+              <div class="G-grp"><span>Liabilities</span>${amount(sum(liabilities), { role: "liability", paise: false })}</div>${liabilities.map(acctLi).join("")}</div>
+            <div class="box"><div class="box-h"><h3>October budgets</h3><span class="muted">16 days left</span></div>${budgets.slice(0, 3).map(budgetRow).join("")}</div>
+          </aside>
+        </div>
+      </main>
+    </div>
+  </div>`;
+
+  const mob = `<div class="G-mob">
+    <div class="M-bar">${LOGO}<div class="r"><button class="M-ib" aria-label="Search">${ic("search")}</button><button class="M-ib" aria-label="Drafts">${ic("inbox")}<b>3</b></button></div></div>
+    <div class="M-title"><h1>Home</h1><div>Friday, 16 October</div></div>
+    <div class="M-card">
+      <div class="M-nw"><div class="l">Net Worth</div><div class="v">${amount(netWorth)}</div><div style="font-size:13px">${delta()}</div>${chart(360, 52)}</div>
+      <div class="M-pair"><div><div class="l">Spent in October</div>${amount(month.spent, { paise: false })}</div><div><div class="l">Received</div>${amount(month.received, { paise: false })}</div></div>
+    </div>
+    <div class="M-sec"><span>Needs attention</span></div>
+    <div class="M-card">${upcoming.map((u) => `<div class="M-row"><span class="ic" style="--hue:${u.hue}">${ic(u.icon)}</span><div class="main"><div class="t">${u.t}</div><div class="s">${u.s}</div></div>${ic("chevron-right")}</div>`).join("")}</div>
+    <div class="M-sec"><span>Accounts</span><a href="#">See all</a></div>
+    <div class="M-card">
+      ${assets.slice(0, 4).map((a) => `<div class="M-row"><span class="ic" style="--hue:${hueAcct(a)}">${ic(a.icon)}</span><div class="main"><div class="t">${a.name}</div><div class="s">${a.sub}</div></div>${accAmt(a, { paise: false })}</div>`).join("")}
+      <div class="M-grp"><span>Liabilities</span><span>${amount(sum(liabilities), { role: "liability", paise: false })} owed</span></div>
+      ${liabilities.map((a) => `<div class="M-row"><span class="ic" style="--hue:${hueAcct(a)}">${ic(a.icon)}</span><div class="main"><div class="t">${a.name}</div><div class="s">${a.sub}</div></div>${accAmt(a, { paise: false })}</div>`).join("")}
+    </div>
+    <div class="M-sec"><span>October budgets</span><a href="#">16 days left</a></div>
+    <div class="M-card">${budgets.map((b) => `<div class="M-row"><span class="ic" style="--hue:${exp(b.name).hue}">${ic(exp(b.name).icon)}</span><div class="main"><div class="t">${b.name}</div><div class="progress"><i style="width:${pct(b)}%;background:${b.spent > b.budget ? "var(--bad)" : exp(b.name).hue}"></i></div></div><div style="text-align:right;width:76px;flex:none">${amount(b.budget - b.spent, { paise: false })}<div class="muted" style="font-size:12px">${b.spent > b.budget ? "over" : "left"}</div></div></div>`).join("")}</div>
+    ${byDay(txns).map(([d, ts], i) => `<div class="M-sec"><span>${d}</span>${i ? "" : `<a href="#">See all</a>`}</div><div class="M-card">${ts.map((t) => `<div class="M-row"><span class="ic round" style="--hue:${exp(t.to).hue}">${ic(exp(t.to).icon)}</span><div class="main"><div class="t">${txWho(t)}</div><div class="s">${t.to} · ${txSub(t)}</div></div>${txAmt(t)}</div>`).join("")}</div>`).join("")}
+  </div>
+  <nav class="M-tabs">
+    <a href="#" class="on">${ic("house")}Home</a><a href="#">${ic("arrow-left-right")}Activity</a>
+    <button class="plus" data-act="form" aria-label="New transaction"><span>${ic("plus")}</span></button>
+    <a href="#">${ic("pie-chart")}Budgets</a><a href="#">${ic("menu")}More</a>
+  </nav>`;
+
+  const sheet = state.form ? `<div class="dialog-bg G-scrim" data-act="form"></div><section class="G-sheet" role="dialog" aria-label="New transaction"><div class="grab"></div>
+    <div class="sh"><button data-act="form">Cancel</button><h3>New transaction</h3><button>Save</button></div>
+    <div class="sb">
+      <div class="amt"><span>₹</span><input value="2,386.75" inputmode="decimal" aria-label="Amount"></div>
+      <div class="segc"><button class="on">Spent</button><button>Received</button><button>Moved</button></div>
+      <div class="M-card">
+        <div class="M-row"><label>From</label><select class="val"><option>HDFC Savings</option><option>HDFC Regalia</option><option>Cash</option></select>${ic("chevron-right")}</div>
+        <div class="M-row"><label>To</label><select class="val"><option>Groceries</option><option>Eating out</option><option>Rent</option></select>${ic("chevron-right")}</div>
+        <div class="M-row"><label>Date</label><input class="val" type="date" value="2026-10-16"></div>
+      </div>
+      <div class="M-sec"><span>Details</span></div>
+      <div class="M-card">
+        <div class="M-row"><label>Party</label><input class="val" value="BigBasket"></div>
+        <div class="M-row"><label>Note</label><input class="val" placeholder="Optional"></div>
+      </div>
+    </div>
+  </section>` : "";
+
+  return desk + mob + dialog() + sheet;
+}
+
 // ---------- shell ----------
 function sync() {
   const p = new URLSearchParams({ variant: state.variant });
@@ -638,7 +831,7 @@ function sync() {
   history.replaceState(null, "", "?" + p);
 }
 
-const RENDER = { A: renderA, B: renderB, C: renderC, D: renderD, E: renderE, F: renderF };
+const RENDER = { G: renderG, A: renderA, B: renderB, C: renderC, D: renderD, E: renderE, F: renderF };
 function render() {
   const root = document.documentElement;
   if (state.theme === "system") delete root.dataset.theme; else root.dataset.theme = state.theme;
