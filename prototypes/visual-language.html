@@ -1,9 +1,10 @@
 <!doctype html>
 <!--
-  PROTOTYPE, throwaway. Answers "What does ledgr look like?" (issue #2), round 2.
-  Round 1 read as generic and plain; the reference is now CRED / Jupiter: bold, high-contrast, glossy.
-  Three visual languages for one Home screen, switchable via ?variant=A|B|C (or ← →).
-  The bottom bar also flips theme, Privacy Mode and Number Format. Open the file in a browser.
+  PROTOTYPE, throwaway. Answers "What does ledgr look like?" (issue #2), round 3.
+  Round 2 picked C (Aurora). These five variants keep Aurora's type, colour and glow, but on
+  solid, bordered surfaces: practical first, no glass or borderless panels.
+  Switch with ?variant=A..E (or ← →). The bottom bar also flips theme, Privacy Mode and Number Format.
+  Open the file in a browser.
 -->
 <html lang="en">
 <head>
@@ -12,7 +13,7 @@
 <title>ledgr visual language</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..800&family=Outfit:wght@300..700&family=Unbounded:wght@400..800&family=Onest:wght@400..700&family=Syne:wght@500..800&family=Figtree:wght@400..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500..800&family=Figtree:wght@400..800&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@0.453.0/dist/umd/lucide.min.js"></script>
 <style>
 :root { color-scheme: light dark; }
@@ -20,256 +21,236 @@
 :root[data-theme="dark"] { color-scheme: dark; }
 * { box-sizing: border-box; }
 html, body { margin: 0; min-height: 100%; }
-body { -webkit-font-smoothing: antialiased; }
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
 input, select { min-width: 0; width: 100%; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
-svg.lucide { width: 1.15em; height: 1.15em; stroke-width: 2; }
+:focus-visible { outline: 2px solid var(--good); outline-offset: 2px; }
+svg.lucide { width: 18px; height: 18px; stroke-width: 2; }
 
-/* Amounts: the rupee sign and paise are set smaller so the rupees carry the figure. */
-.num { font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
-.num .cur { font-size: 0.72em; margin-right: 0.08em; opacity: 0.75; font-family: var(--cur-font, inherit); }
-.num .dec { font-size: 0.62em; opacity: 0.6; }
-.num .suf { font-size: 0.7em; opacity: 0.7; margin-left: 0.3em; }
-.num.good { color: var(--good); }
-.num.bad { color: var(--bad); }
-.num.mask { letter-spacing: 0.15em; opacity: 0.7; }
-
-/* ================= A: Vault (CRED-like) ================= */
-body[data-variant="A"] {
-  --bg: light-dark(#e9eae8, #000000);
-  --surface: light-dark(#eef0ee, #0d0e0e);
-  --hi: light-dark(rgba(255,255,255,.9), rgba(255,255,255,.06));
-  --lo: light-dark(rgba(120,128,122,.35), rgba(0,0,0,.9));
-  --fg: light-dark(#0c0d0d, #f3f1ea);
-  --muted: light-dark(#6c726e, #7f817b);
-  --line: light-dark(rgba(0,0,0,.08), rgba(255,255,255,.07));
-  --good: light-dark(#0e7a5a, #6fe0b0);
-  --bad: light-dark(#b3261e, #ff7b6b);
-  --metal: linear-gradient(135deg, light-dark(#0e7a5a, #8ff0c6) 0%, light-dark(#1aa679, #2aa77c) 45%, light-dark(#0b5e45, #d9fff0) 100%);
-  --ring: var(--good);
-  --cur-font: "Outfit", sans-serif;
-  font-family: "Outfit", system-ui, sans-serif; font-weight: 400; font-size: 15px;
-  background: var(--bg); color: var(--fg);
-}
-.v-top { display: flex; align-items: center; gap: 32px; padding: 22px 40px; }
-.v-top img { height: 26px; }
-.v-top nav { display: flex; gap: 26px; flex: 1; overflow-x: auto; }
-.v-top nav a { color: var(--muted); text-decoration: none; font-weight: 500; letter-spacing: .01em; }
-.v-top nav a.on { color: var(--fg); }
-.v-emb { background: var(--surface); border-radius: 22px; box-shadow: -6px -6px 14px var(--hi), 8px 8px 20px var(--lo), inset 0 1px 0 var(--hi); }
-.v-in { background: var(--bg); border-radius: 16px; box-shadow: inset 4px 4px 10px var(--lo), inset -4px -4px 10px var(--hi); }
-.v-btn { border: 0; border-radius: 14px; padding: 12px 20px; font-weight: 600; color: light-dark(#fff, #02140d); background: var(--metal); box-shadow: 0 6px 18px light-dark(rgba(14,122,90,.3), rgba(111,224,176,.18)), inset 0 1px 0 rgba(255,255,255,.35); }
-.v-btn.ghost { background: var(--surface); color: var(--fg); box-shadow: -3px -3px 8px var(--hi), 4px 4px 10px var(--lo); }
-.v-wrap { padding: 8px 40px 140px; max-width: 1280px; margin: 0 auto; }
-.v-hero { display: grid; grid-template-columns: 1fr 1.25fr; gap: 40px; align-items: end; margin: 24px 0 44px; }
-.v-label { color: var(--muted); font-size: 14px; letter-spacing: .02em; }
-.v-big { font-family: "Bodoni Moda", serif; font-variation-settings: "opsz" 24; font-weight: 600; font-size: 84px; line-height: 1; letter-spacing: -0.02em; margin: 12px 0 18px; }
-.v-big .num .cur { font-size: .5em; vertical-align: .55em; margin-right: .12em; opacity: .55; }
-.v-big .num .dec { font-size: .38em; }
-.v-delta { display: inline-flex; gap: 8px; align-items: center; padding: 8px 14px; font-size: 14px; }
-.v-chart { height: 180px; padding: 18px; }
-.v-chart svg { width: 100%; height: 100%; overflow: visible; }
-.v-h2 { font-family: "Bodoni Moda", serif; font-weight: 500; font-size: 26px; margin: 0 0 18px; display: flex; justify-content: space-between; align-items: baseline; }
-.v-h2 small { font-family: "Outfit"; font-size: 14px; color: var(--muted); font-weight: 400; }
-.v-cards { display: flex; gap: 22px; overflow-x: auto; padding: 12px 6px 28px; margin: 0 -6px 26px; }
-.v-card { flex: none; width: 300px; aspect-ratio: 1.586; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; color: #f4f2ec; box-shadow: 0 18px 40px light-dark(rgba(0,0,0,.25), rgba(0,0,0,.9)), inset 0 1px 0 rgba(255,255,255,.18); }
-.v-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.14) 45%, transparent 60%); pointer-events: none; }
-.v-card.c1 { background: radial-gradient(120% 140% at 0% 0%, #2c3a35 0%, #0b0f0e 60%); }
-.v-card.c2 { background: radial-gradient(120% 140% at 100% 0%, #1b4a3b 0%, #07130f 65%); }
-.v-card.c3 { background: radial-gradient(120% 140% at 0% 100%, #3a3328 0%, #0f0d0a 60%); }
-.v-card.c4 { background: radial-gradient(120% 140% at 50% 0%, #22262a 0%, #050607 65%); }
-.v-card .chip { width: 38px; height: 28px; border-radius: 6px; background: linear-gradient(135deg, #d8c48f, #8d7a45 60%, #e9dcb0); opacity: .9; }
-.v-card .nm { font-size: 13px; opacity: .7; letter-spacing: .03em; }
-.v-card .amt { font-family: "Bodoni Moda", serif; font-variation-settings: "opsz" 18; font-size: 30px; font-weight: 600; }
-.v-card .row { display: flex; justify-content: space-between; align-items: end; }
-.v-card .kind { font-size: 12px; opacity: .6; }
-.v-cols { display: grid; grid-template-columns: 1fr 1.3fr; gap: 28px; }
-.v-pad { padding: 26px; }
-.v-rings { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-.v-ring { text-align: center; padding: 18px 8px; }
-.v-ring svg { width: 92px; height: 92px; transform: rotate(-90deg); }
-.v-ring .n { font-weight: 500; margin-top: 8px; }
-.v-ring .l { font-size: 13px; color: var(--muted); }
-.v-tx { display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); }
-.v-tx:last-child { border-bottom: 0; }
-.v-ico { width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; flex: none; color: var(--good); }
-.v-tx .mid { flex: 1; min-width: 0; }
-.v-tx .mid div:last-child { font-size: 13px; color: var(--muted); }
-.v-tx .num { font-weight: 500; font-size: 16px; }
-.v-modal-bg { position: fixed; inset: 0; background: light-dark(rgba(233,234,232,.7), rgba(0,0,0,.75)); backdrop-filter: blur(6px); }
-.v-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(480px, calc(100% - 32px)); padding: 30px; }
-.v-modal h3 { font-family: "Bodoni Moda", serif; font-weight: 500; font-size: 28px; margin: 0 0 20px; }
-.v-amt-in { font-family: "Bodoni Moda", serif; font-size: 56px; font-weight: 500; text-align: center; border: 0; background: transparent; padding: 18px 10px; font-variant-numeric: lining-nums; }
-.v-amt-in:focus { outline: none; }
-.v-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 18px 0 22px; }
-.v-fields label { display: flex; flex-direction: column; gap: 4px; padding: 10px 14px; font-size: 12px; color: var(--muted); }
-.v-fields label.full { grid-column: 1 / -1; }
-.v-fields input, .v-fields select { border: 0; background: transparent; font-size: 15px; color: var(--fg); padding: 0; }
-.v-fields input:focus, .v-fields select:focus { outline: none; }
-@media (max-width: 900px) { .v-top, .v-wrap { padding-left: 16px; padding-right: 16px; } .v-hero, .v-cols { grid-template-columns: 1fr; } .v-big { font-size: 56px; } .v-top nav { display: none; } .v-card { width: 260px; } }
-
-/* ================= B: Pulse (Jupiter-like) ================= */
-body[data-variant="B"] {
-  --bg: light-dark(#f3f5f4, #000000);
-  --surface: light-dark(#ffffff, #101211);
-  --raised: light-dark(#eef2f0, #1a1d1c);
-  --fg: light-dark(#0b100e, #f4f7f5);
-  --muted: light-dark(#66706b, #8a948f);
-  --good: light-dark(#0b8a5f, #5ee3a8);
-  --bad: light-dark(#d1342b, #ff7d70);
-  --ring: #0fae78;
-  --cur-font: "Onest", sans-serif;
-  font-family: "Onest", system-ui, sans-serif; font-size: 15px;
-  background: var(--bg); color: var(--fg);
-}
-.p-app { max-width: 1180px; margin: 0 auto; padding: 18px 20px 150px; }
-.p-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
-.p-top img { height: 28px; }
-.p-top .r { display: flex; gap: 10px; }
-.p-ib { width: 42px; height: 42px; border-radius: 50%; border: 0; background: var(--surface); display: grid; place-items: center; }
-.p-hero { position: relative; overflow: hidden; border-radius: 32px; padding: 30px 32px 0; color: #fff;
-  background: radial-gradient(90% 120% at 100% 0%, #b8ff6a 0%, transparent 45%), radial-gradient(80% 120% at 0% 100%, #00c2a8 0%, transparent 55%), linear-gradient(140deg, #064e3b 0%, #0b8a5f 55%, #13c08a 100%); }
-.p-hero .label { font-weight: 600; opacity: .85; display: flex; gap: 8px; align-items: center; }
-.p-big { font-family: "Unbounded", sans-serif; font-weight: 700; font-size: 60px; letter-spacing: -0.03em; line-height: 1.05; margin: 10px 0 14px; }
-.p-big .num .cur { font-family: "Unbounded"; font-weight: 500; }
-.p-pill { display: inline-flex; gap: 6px; align-items: center; background: rgba(255,255,255,.18); backdrop-filter: blur(8px); padding: 7px 14px; border-radius: 999px; font-weight: 600; font-size: 14px; }
-.p-pill .num.good { color: #fff; }
-.p-spark { height: 110px; margin: 10px -32px 0; }
-.p-spark svg { width: 100%; height: 100%; display: block; }
-.p-hero .add { position: absolute; top: 26px; right: 26px; background: #fff; color: #064e3b; border: 0; border-radius: 999px; padding: 12px 20px; font-weight: 700; display: flex; gap: 8px; align-items: center; box-shadow: 0 8px 24px rgba(0,0,0,.18); }
-.p-insights { display: flex; gap: 12px; overflow-x: auto; padding: 18px 2px 6px; }
-.p-ins { flex: none; display: flex; gap: 12px; align-items: center; background: var(--surface); border-radius: 20px; padding: 12px 16px 12px 12px; font-weight: 600; font-size: 14px; }
-.p-ins .ic { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; color: #fff; }
-.p-ins small { display: block; font-weight: 400; color: var(--muted); font-size: 13px; }
-.p-grid { display: grid; grid-template-columns: 1fr 1fr 1.1fr; gap: 18px; margin-top: 18px; }
-.p-card { background: var(--surface); border-radius: 28px; padding: 22px; }
-.p-card h2 { font-family: "Unbounded", sans-serif; font-weight: 600; font-size: 17px; margin: 0 0 18px; display: flex; justify-content: space-between; align-items: center; letter-spacing: -0.01em; }
-.p-card h2 a { font-family: "Onest"; font-size: 13px; font-weight: 600; color: var(--good); text-decoration: none; }
-.p-donut { position: relative; width: 190px; height: 190px; margin: 0 auto 18px; border-radius: 50%; }
-.p-donut::after { content: ""; position: absolute; inset: 26px; border-radius: 50%; background: var(--surface); }
-.p-donut .c { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; z-index: 1; }
-.p-donut .c b { font-family: "Unbounded"; font-size: 22px; font-weight: 700; display: block; }
-.p-donut .c span { font-size: 13px; color: var(--muted); }
-.p-leg { display: flex; align-items: center; gap: 12px; padding: 7px 0; }
-.p-dot { width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; color: #fff; flex: none; }
-.p-leg .n { flex: 1; font-weight: 600; }
-.p-leg .n small { display: block; font-weight: 400; color: var(--muted); font-size: 12px; }
-.p-bar { height: 6px; border-radius: 999px; background: var(--raised); margin-top: 6px; overflow: hidden; }
-.p-bar i { display: block; height: 100%; border-radius: 999px; }
-.p-acct { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 18px; margin: 0 -10px; }
-.p-acct:hover { background: var(--raised); }
-.p-acct .n { flex: 1; font-weight: 600; }
-.p-acct .n small { display: block; font-weight: 400; color: var(--muted); font-size: 12px; }
-.p-acct .num { font-weight: 700; }
-.p-day { font-size: 12px; font-weight: 700; color: var(--muted); margin: 12px 0 4px; }
-.p-drawer-bg { position: fixed; inset: 0; background: rgba(0,0,0,.45); }
-.p-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 100%); background: var(--surface); padding: 26px 26px 100px; overflow-y: auto; border-radius: 28px 0 0 28px; }
-.p-drawer h3 { font-family: "Unbounded"; font-weight: 600; font-size: 20px; margin: 0 0 18px; display: flex; justify-content: space-between; }
-.p-drawer h3 button { border: 0; background: var(--raised); width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; }
-.p-seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: var(--raised); padding: 5px; border-radius: 16px; }
-.p-seg button { border: 0; background: transparent; padding: 10px; border-radius: 12px; font-weight: 700; }
-.p-seg button.on { background: var(--surface); box-shadow: 0 2px 8px rgba(0,0,0,.08); }
-.p-amt { font-family: "Unbounded"; font-size: 44px; font-weight: 700; text-align: center; border: 0; background: transparent; padding: 22px 0; letter-spacing: -0.03em; }
-.p-amt:focus { outline: none; }
-.p-lbl { font-size: 13px; font-weight: 700; color: var(--muted); margin: 14px 0 10px; }
-.p-picks { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-.p-pick { border: 0; background: var(--raised); border-radius: 18px; padding: 12px 4px 10px; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; }
-.p-pick.on { box-shadow: inset 0 0 0 2px var(--good); }
-.p-chips { display: flex; gap: 8px; flex-wrap: wrap; }
-.p-chip { border: 0; background: var(--raised); border-radius: 999px; padding: 9px 14px; font-weight: 600; display: flex; gap: 6px; align-items: center; }
-.p-chip.on { background: var(--fg); color: var(--bg); }
-.p-in { display: flex; gap: 10px; }
-.p-in label { flex: 1; background: var(--raised); border-radius: 16px; padding: 10px 14px; font-size: 12px; font-weight: 600; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
-.p-in input { border: 0; background: transparent; font-size: 15px; color: var(--fg); padding: 0; }
-.p-in input:focus { outline: none; }
-.p-go { width: 100%; margin-top: 22px; border: 0; border-radius: 18px; padding: 16px; font-weight: 700; font-size: 16px; color: #fff; background: linear-gradient(120deg, #064e3b, #0b8a5f 60%, #13c08a); }
-@media (max-width: 980px) { .p-grid { grid-template-columns: 1fr; } .p-big { font-size: 40px; } .p-hero .add { position: static; margin-bottom: 18px; } }
-
-/* ================= C: Aurora (glass) ================= */
-body[data-variant="C"] {
-  --bg: light-dark(#f6f8f7, #000000);
-  --glass: light-dark(rgba(255,255,255,.62), rgba(18,22,21,.55));
-  --glass-2: light-dark(rgba(255,255,255,.75), rgba(32,38,36,.6));
-  --edge: light-dark(rgba(255,255,255,.9), rgba(255,255,255,.09));
+/* ---------- Aurora tokens, shared by every variant ---------- */
+body {
+  --bg: light-dark(#f4f7f5, #000000);
+  --surface: light-dark(#ffffff, #0b0e0d);
+  --surface-2: light-dark(#eef3f0, #131816);
+  --border: light-dark(#dce4e0, #1f2724);
+  --border-strong: light-dark(#c4cfca, #2e3935);
   --fg: light-dark(#0a0f0d, #f2f6f4);
-  --muted: light-dark(#5d6964, #8b9792);
+  --muted: light-dark(#5b6762, #8b9792);
   --good: light-dark(#08875c, #5ff0b4);
   --bad: light-dark(#cc3a2c, #ff8577);
-  --ring: var(--good);
-  --cur-font: "Figtree", sans-serif;
-  font-family: "Figtree", system-ui, sans-serif; font-size: 15px;
+  --cta: light-dark(#08875c, #5ff0b4);
+  --on-cta: light-dark(#ffffff, #00150d);
+  --glow-1: light-dark(rgba(95,240,180,.38), rgba(12,140,96,.42));
+  --glow-2: light-dark(rgba(140,200,255,.32), rgba(24,80,140,.38));
+  --brand-ink: light-dark(#121418, #ece8df);
+  --brand-green: light-dark(#13785a, #5fcb9f);
+  --r: 18px;
+  font-family: "Figtree", system-ui, sans-serif; font-size: 15px; line-height: 1.45;
   background: var(--bg); color: var(--fg);
+  -webkit-font-smoothing: antialiased;
 }
-.a-sky { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-.a-sky i { position: absolute; border-radius: 50%; filter: blur(90px); }
-.a-sky i:nth-child(1) { width: 620px; height: 620px; left: -160px; top: -200px; background: light-dark(#a8f0cf, #0c6b4c); opacity: .75; }
-.a-sky i:nth-child(2) { width: 520px; height: 520px; right: -120px; top: 80px; background: light-dark(#bfe2ff, #123e66); opacity: .6; }
-.a-sky i:nth-child(3) { width: 560px; height: 560px; left: 35%; bottom: -320px; background: light-dark(#e4f9b5, #2c5a14); opacity: .5; }
-.a-app { position: relative; z-index: 1; max-width: 1120px; margin: 0 auto; padding: 20px 20px 160px; }
-.a-g { background: var(--glass); backdrop-filter: blur(24px) saturate(1.4); -webkit-backdrop-filter: blur(24px) saturate(1.4); border: 1px solid var(--edge); border-radius: 26px; }
-.a-top { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px 10px 20px; margin-bottom: 40px; border-radius: 999px; }
-.a-top img { height: 26px; }
-.a-top nav { display: flex; gap: 4px; }
-.a-top nav a { padding: 9px 16px; border-radius: 999px; text-decoration: none; color: var(--muted); font-weight: 600; font-size: 14px; }
-.a-top nav a.on { background: var(--fg); color: var(--bg); }
-.a-hero { text-align: center; }
-.a-hero .label { color: var(--muted); font-weight: 600; }
-.a-big { font-family: "Syne", sans-serif; font-weight: 700; font-size: 88px; letter-spacing: -0.04em; line-height: 1; margin: 10px 0 16px; }
-.a-big .num .cur { font-family: "Figtree"; font-weight: 500; font-size: .42em; vertical-align: .9em; }
-.a-big .num .dec { font-family: "Figtree"; font-weight: 500; font-size: .32em; }
-.a-hero .row { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; }
-.a-pill { padding: 8px 14px; border-radius: 999px; font-weight: 600; font-size: 14px; }
-.a-seg { display: inline-flex; gap: 2px; padding: 4px; border-radius: 999px; }
-.a-seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 999px; font-weight: 700; font-size: 13px; color: var(--muted); }
-.a-seg button.on { background: var(--glass-2); color: var(--fg); }
-.a-chart { height: 220px; margin: 24px -20px 64px; }
-.a-chart svg { width: 100%; height: 100%; display: block; overflow: visible; }
-.a-h2 { font-family: "Syne"; font-weight: 700; font-size: 22px; margin: 0 0 14px; display: flex; justify-content: space-between; align-items: center; }
-.a-h2 small { font-family: "Figtree"; font-size: 14px; font-weight: 600; color: var(--muted); }
-.a-rail { display: flex; gap: 14px; overflow-x: auto; padding: 4px 2px 18px; margin-bottom: 18px; scroll-snap-type: x mandatory; }
-.a-acct { flex: none; width: 220px; padding: 18px; scroll-snap-align: start; display: flex; flex-direction: column; gap: 22px; }
-.a-acct .ic { width: 40px; height: 40px; border-radius: 14px; display: grid; place-items: center; background: var(--glass-2); border: 1px solid var(--edge); }
-.a-acct .n { color: var(--muted); font-weight: 600; font-size: 13px; }
-.a-acct .num { font-family: "Syne"; font-weight: 700; font-size: 22px; letter-spacing: -0.02em; }
-.a-cols { display: grid; grid-template-columns: 1fr 1.3fr; gap: 18px; }
-.a-pad { padding: 22px; }
-.a-bud { display: grid; grid-template-columns: 40px 1fr auto; gap: 4px 12px; align-items: center; margin-bottom: 18px; }
-.a-bud .ic { grid-row: span 2; width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; color: #fff; }
-.a-bud .n { font-weight: 700; }
-.a-bud .bar { grid-column: 2 / -1; height: 14px; border-radius: 6px; background: var(--glass-2); overflow: hidden; position: relative; }
-.a-bud .bar i { position: absolute; inset: 0 auto 0 0; border-radius: 6px; }
-.a-tx { display: flex; gap: 12px; align-items: center; padding: 10px 0; }
-.a-tx .ic { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; color: #fff; flex: none; }
-.a-tx .mid { flex: 1; min-width: 0; font-weight: 600; }
-.a-tx .mid small { display: block; font-weight: 400; color: var(--muted); font-size: 13px; }
-.a-tx .num { font-weight: 700; }
-.a-fab { position: fixed; right: 26px; bottom: 86px; z-index: 5; border: 0; border-radius: 22px; padding: 16px 22px; display: flex; gap: 8px; align-items: center; font-weight: 800; color: light-dark(#fff, #00150d); background: light-dark(#0a0f0d, #5ff0b4); box-shadow: 0 12px 30px light-dark(rgba(0,0,0,.25), rgba(95,240,180,.25)); }
-.a-scrim { position: fixed; inset: 0; z-index: 6; background: light-dark(rgba(246,248,247,.35), rgba(0,0,0,.55)); }
-.a-sheet { position: fixed; z-index: 7; left: 50%; bottom: 0; transform: translateX(-50%); width: min(560px, 100%); border-radius: 32px 32px 0 0; padding: 14px 24px 100px; }
-.a-sheet .grab { width: 44px; height: 5px; border-radius: 999px; background: var(--muted); opacity: .4; margin: 0 auto 14px; }
-.a-sheet .a-seg { display: flex; width: 100%; }
-.a-sheet .a-seg button { flex: 1; padding: 10px; }
-.a-amt { font-family: "Syne"; font-weight: 700; font-size: 58px; letter-spacing: -0.04em; text-align: center; border: 0; background: transparent; padding: 18px 0 12px; }
-.a-amt:focus { outline: none; }
-.a-to { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 12px; }
-.a-to button { flex: none; border: 1px solid var(--edge); background: var(--glass-2); border-radius: 999px; padding: 8px 14px 8px 8px; display: flex; gap: 8px; align-items: center; font-weight: 600; }
-.a-to button span { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; color: #fff; }
-.a-to button.on { border-color: var(--good); box-shadow: inset 0 0 0 1px var(--good); }
-.a-f { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-.a-f label { background: var(--glass-2); border: 1px solid var(--edge); border-radius: 16px; padding: 9px 12px; font-size: 12px; font-weight: 600; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
-.a-f input, .a-f select { border: 0; background: transparent; padding: 0; font-size: 14px; color: var(--fg); }
-.a-f input:focus, .a-f select:focus { outline: none; }
-.a-go { width: 100%; margin-top: 16px; border: 0; border-radius: 18px; padding: 16px; font-weight: 800; font-size: 16px; color: light-dark(#fff, #00150d); background: light-dark(#0a0f0d, #5ff0b4); }
-@media (max-width: 860px) { .a-cols { grid-template-columns: 1fr; } .a-big { font-size: 54px; } .a-top nav { display: none; } .a-f { grid-template-columns: 1fr 1fr; } }
+.logo { height: 26px; width: auto; display: block; color: var(--brand-ink); }
+.display { font-family: "Syne", sans-serif; letter-spacing: -0.02em; }
+
+.num { font-variant-numeric: tabular-nums lining-nums; white-space: nowrap; }
+.num .cur { font-family: "Figtree"; font-weight: 500; font-size: 0.72em; margin-right: 0.06em; opacity: 0.75; }
+.num .dec { font-family: "Figtree"; font-weight: 500; font-size: 0.62em; opacity: 0.6; }
+.num .suf { font-family: "Figtree"; font-weight: 500; font-size: 0.7em; opacity: 0.7; margin-left: 0.3em; }
+.num.good { color: var(--good); }
+.num.bad { color: var(--bad); }
+.num.mask { letter-spacing: 0.12em; opacity: 0.7; }
+.big .num .cur { font-size: .42em; vertical-align: .85em; }
+.big .num .dec { font-size: .34em; }
+
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); }
+.ph { display: flex; justify-content: space-between; align-items: center; padding: 16px 18px; border-bottom: 1px solid var(--border); }
+.ph h2 { font-family: "Syne"; font-weight: 700; font-size: 17px; margin: 0; letter-spacing: -0.01em; }
+.ph a, .link { color: var(--muted); font-weight: 600; font-size: 13px; text-decoration: none; }
+.pb { padding: 6px 18px 12px; }
+.glow { position: absolute; inset: 0; overflow: hidden; pointer-events: none; border-radius: inherit; }
+.glow::before, .glow::after { content: ""; position: absolute; border-radius: 50%; filter: blur(70px); }
+.glow::before { width: 60%; height: 140%; left: -15%; top: -60%; background: var(--glow-1); }
+.glow::after { width: 50%; height: 120%; right: -10%; top: -30%; background: var(--glow-2); }
+.rel { position: relative; }
+.rel > *:not(.glow) { position: relative; }
+
+.btn { border: 1px solid transparent; border-radius: 12px; padding: 10px 16px; font-weight: 700; display: inline-flex; gap: 8px; align-items: center; justify-content: center; background: var(--cta); color: var(--on-cta); }
+.btn.ghost { background: var(--surface); color: var(--fg); border-color: var(--border-strong); }
+.pill { display: inline-flex; gap: 6px; align-items: center; border: 1px solid var(--border); background: var(--surface); border-radius: 999px; padding: 6px 12px; font-weight: 600; font-size: 14px; }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; padding: 3px; background: var(--surface); }
+.seg button { border: 0; background: transparent; padding: 5px 12px; border-radius: 999px; font-weight: 700; font-size: 13px; color: var(--muted); }
+.seg button.on { background: var(--surface-2); color: var(--fg); box-shadow: inset 0 0 0 1px var(--border-strong); }
+
+.ic { width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; color: #fff; flex: none; }
+.ic.round { border-radius: 50%; }
+.ic.soft { background: var(--surface-2); color: var(--fg); border: 1px solid var(--border); }
+.ic.sm { width: 30px; height: 30px; border-radius: 10px; }
+.ic.sm svg.lucide { width: 15px; height: 15px; }
+
+.row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.row:last-child { border-bottom: 0; }
+.row .mid { flex: 1; min-width: 0; font-weight: 600; }
+.row .mid small { display: block; font-weight: 400; color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.row .num { font-weight: 700; }
+.day { font-size: 12px; font-weight: 700; color: var(--muted); padding: 12px 0 2px; display: flex; justify-content: space-between; }
+
+.bud { padding: 10px 0; border-bottom: 1px solid var(--border); }
+.bud:last-child { border-bottom: 0; }
+.bud .t { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+.bud .t .n { flex: 1; }
+.bud .bar { height: 8px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); margin: 8px 0 4px; overflow: hidden; }
+.bud .bar i { display: block; height: 100%; border-radius: 999px; }
+.bud .s { font-size: 13px; color: var(--muted); }
+
+.chart svg { width: 100%; height: 100%; display: block; overflow: visible; }
+
+/* the one shared form body; each variant puts it in a different container */
+.fm { display: flex; flex-direction: column; gap: 12px; }
+.fm .seg { display: flex; }
+.fm .seg button { flex: 1; padding: 8px; }
+.fm .amt { font-family: "Syne"; font-weight: 700; font-size: 44px; letter-spacing: -0.03em; text-align: center; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-2); padding: 10px; }
+.fm .lbl { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: -4px; }
+.fm .to { display: flex; gap: 8px; flex-wrap: wrap; }
+.fm .to button { border: 1px solid var(--border); background: var(--surface); border-radius: 999px; padding: 5px 12px 5px 5px; display: flex; gap: 8px; align-items: center; font-weight: 600; font-size: 14px; }
+.fm .to button.on { border-color: var(--good); box-shadow: inset 0 0 0 1px var(--good); }
+.fm .to .ic { width: 26px; height: 26px; border-radius: 50%; }
+.fm .to svg.lucide { width: 14px; height: 14px; }
+.fm .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.fm .grid .full { grid-column: 1 / -1; }
+.field { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 700; color: var(--muted); }
+.field input, .field select { border: 1px solid var(--border-strong); background: var(--surface); border-radius: 10px; padding: 9px 11px; font-size: 15px; font-weight: 500; color: var(--fg); }
+.fm .act { display: flex; gap: 10px; justify-content: flex-end; }
+.scrim { position: fixed; inset: 0; z-index: 20; background: light-dark(rgba(10,15,13,.3), rgba(0,0,0,.65)); }
+
+/* ================= A: Solid ================= */
+.A-app { max-width: 1140px; margin: 0 auto; padding: 18px 20px 140px; }
+.A-top { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+.A-top nav { display: flex; gap: 2px; border: 1px solid var(--border); background: var(--surface); padding: 4px; border-radius: 999px; margin-left: auto; }
+.A-top nav a { padding: 7px 14px; border-radius: 999px; color: var(--muted); text-decoration: none; font-weight: 600; font-size: 14px; }
+.A-top nav a.on { background: var(--fg); color: var(--bg); }
+.A-hero { text-align: center; padding: 30px 24px 18px; margin-bottom: 18px; border-radius: 24px; }
+.A-hero .big { font-family: "Syne"; font-weight: 700; font-size: 76px; letter-spacing: -0.04em; line-height: 1; margin: 8px 0 16px; }
+.A-hero .chart { height: 170px; margin: 18px -24px 0; }
+.A-rail { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+.A-acct { padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; }
+.A-acct .top { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: 13px; font-weight: 600; }
+.A-acct .n { color: var(--muted); font-size: 13px; font-weight: 600; }
+.A-acct .num { font-family: "Syne"; font-weight: 700; font-size: 21px; }
+.A-cols { display: grid; grid-template-columns: 1fr 1.3fr; gap: 18px; }
+.A-sheet { position: fixed; z-index: 21; left: 50%; bottom: 0; transform: translateX(-50%); width: min(560px, 100%); background: var(--surface); border: 1px solid var(--border-strong); border-bottom: 0; border-radius: 24px 24px 0 0; padding: 18px 22px 96px; }
+.A-sheet h3 { font-family: "Syne"; margin: 0 0 12px; font-size: 20px; }
+@media (max-width: 900px) { .A-rail { grid-template-columns: 1fr 1fr; } .A-cols { grid-template-columns: 1fr; } .A-hero .big { font-size: 48px; } .A-top nav { display: none; } }
+
+/* ================= B: Sidebar ================= */
+.B-shell { display: grid; grid-template-columns: 236px 1fr; min-height: 100vh; }
+.B-side { border-right: 1px solid var(--border); background: var(--surface); padding: 20px 14px; display: flex; flex-direction: column; gap: 2px; position: sticky; top: 0; height: 100vh; }
+.B-side .logo { margin: 0 8px 22px; }
+.B-side a { display: flex; gap: 10px; align-items: center; padding: 9px 10px; border-radius: 10px; color: var(--muted); text-decoration: none; font-weight: 600; border: 1px solid transparent; }
+.B-side a.on { color: var(--fg); background: var(--surface-2); border-color: var(--border); }
+.B-side a .badge { margin-left: auto; font-size: 12px; background: var(--cta); color: var(--on-cta); border-radius: 999px; padding: 1px 8px; }
+.B-side .btn { margin-top: auto; }
+.B-main { padding: 22px 28px 140px; max-width: 1180px; }
+.B-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.B-head h1 { font-family: "Syne"; font-size: 26px; margin: 0; }
+.B-head span { color: var(--muted); font-weight: 600; }
+.B-row1 { display: grid; grid-template-columns: 1.7fr 1fr; gap: 16px; margin-bottom: 16px; }
+.B-nw { padding: 20px 22px 0; overflow: hidden; }
+.B-nw .big { font-family: "Syne"; font-weight: 700; font-size: 54px; letter-spacing: -0.035em; line-height: 1.05; margin: 4px 0 10px; }
+.B-nw .chart { height: 120px; margin: 10px -22px 0; }
+.B-month { display: flex; flex-direction: column; }
+.B-month .cell { flex: 1; padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+.B-month .cell:last-child { border-bottom: 0; }
+.B-month .cell .l { flex: 1; color: var(--muted); font-weight: 600; font-size: 14px; }
+.B-month .cell .num { font-family: "Syne"; font-weight: 700; font-size: 22px; }
+.B-tbl { width: 100%; border-collapse: collapse; }
+.B-tbl th { text-align: left; font-size: 12px; color: var(--muted); font-weight: 700; padding: 10px 18px; background: var(--surface-2); border-bottom: 1px solid var(--border); }
+.B-tbl td { padding: 10px 18px; border-bottom: 1px solid var(--border); }
+.B-tbl tr:last-child td { border-bottom: 0; }
+.B-tbl .r { text-align: right; }
+.B-tbl .dim { color: var(--muted); }
+.B-tbl .grp td { font-weight: 800; font-size: 13px; background: var(--surface-2); }
+.B-tbl .who { display: flex; gap: 10px; align-items: center; font-weight: 600; }
+.B-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.B-drawer { position: fixed; z-index: 21; top: 0; right: 0; bottom: 0; width: min(440px, 100%); background: var(--surface); border-left: 1px solid var(--border-strong); padding: 22px 22px 100px; overflow-y: auto; }
+.B-drawer h3 { font-family: "Syne"; margin: 0 0 16px; font-size: 20px; display: flex; justify-content: space-between; align-items: center; }
+@media (max-width: 1000px) { .B-shell { grid-template-columns: 1fr; } .B-side { display: none; } .B-row1, .B-row2 { grid-template-columns: 1fr; } .B-main { padding: 16px 16px 140px; } }
+
+/* ================= C: Bento ================= */
+.C-app { max-width: 1240px; margin: 0 auto; padding: 18px 20px 140px; }
+.C-top { display: flex; align-items: center; gap: 24px; padding: 10px 16px; margin-bottom: 14px; }
+.C-top nav { display: flex; gap: 20px; flex: 1; }
+.C-top nav a { color: var(--muted); text-decoration: none; font-weight: 600; font-size: 14px; padding: 6px 0; border-bottom: 2px solid transparent; }
+.C-top nav a.on { color: var(--fg); border-bottom-color: var(--good); }
+.C-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px; }
+.C-nw { grid-column: span 8; padding: 22px 24px 0; overflow: hidden; display: flex; flex-direction: column; }
+.C-nw .top { display: flex; justify-content: space-between; align-items: start; }
+.C-nw .big { font-family: "Syne"; font-weight: 700; font-size: 64px; letter-spacing: -0.04em; line-height: 1; margin: 6px 0 12px; }
+.C-nw .chart { height: 160px; margin: auto -24px 0; }
+.C-add { grid-column: span 4; padding: 18px; }
+.C-add h3 { font-family: "Syne"; font-size: 17px; margin: 0 0 12px; }
+.C-add .fm .amt { font-size: 34px; }
+.C-acct { grid-column: span 3; padding: 14px 16px; display: flex; gap: 12px; align-items: center; }
+.C-acct .n { flex: 1; font-weight: 600; font-size: 14px; }
+.C-acct .n small { display: block; color: var(--muted); font-weight: 500; font-size: 12px; }
+.C-acct .num { font-weight: 800; }
+.C-bud { grid-column: span 5; }
+.C-rec { grid-column: span 7; }
+@media (max-width: 1000px) { .C-grid > * { grid-column: 1 / -1 !important; } .C-nw .big { font-size: 46px; } .C-top nav { display: none; } }
+
+/* ================= D: Split ================= */
+.D-shell { display: grid; grid-template-columns: 420px 1fr; min-height: 100vh; }
+.D-left { border-right: 1px solid var(--border); background: var(--surface); padding: 22px 22px 120px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.D-left .logo { margin-bottom: 26px; }
+.D-nwbox { padding: 18px 18px 0; border-radius: 18px; overflow: hidden; margin-bottom: 18px; border: 1px solid var(--border); background: var(--bg); }
+.D-nwbox .big { font-family: "Syne"; font-weight: 700; font-size: 46px; letter-spacing: -0.035em; line-height: 1.05; margin: 4px 0 10px; }
+.D-nwbox .chart { height: 100px; margin: 8px -18px 0; }
+.D-sec { font-family: "Syne"; font-weight: 700; font-size: 15px; margin: 18px 0 4px; display: flex; justify-content: space-between; align-items: baseline; }
+.D-sec small { font-family: "Figtree"; color: var(--muted); font-weight: 600; font-size: 13px; }
+.D-right { padding: 18px 28px 140px; max-width: 900px; }
+.D-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 18px; }
+.D-tabs a { padding: 10px 14px; color: var(--muted); text-decoration: none; font-weight: 700; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.D-tabs a.on { color: var(--fg); border-bottom-color: var(--good); }
+.D-entry { display: grid; grid-template-columns: 150px 1.2fr 1fr 140px auto; gap: 8px; padding: 10px; align-items: end; margin-bottom: 8px; }
+.D-entry .field input, .D-entry .field select { padding: 8px 10px; }
+.D-entry .amt input { font-family: "Syne"; font-weight: 700; font-size: 18px; }
+.D-hint { color: var(--muted); font-size: 13px; margin: 0 0 18px 4px; }
+.D-feed .day { font-size: 13px; padding: 16px 18px 8px; border-bottom: 1px solid var(--border); background: var(--surface-2); }
+.D-feed .day:first-child { border-radius: var(--r) var(--r) 0 0; }
+.D-feed .row { padding: 12px 18px; }
+@media (max-width: 1000px) { .D-shell { grid-template-columns: 1fr; } .D-left { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--border); padding-bottom: 22px; } .D-right { padding: 16px; } .D-entry { grid-template-columns: 1fr 1fr; } }
+
+/* ================= E: Pocket ================= */
+.E-frame { max-width: 480px; margin: 0 auto; min-height: 100vh; border-left: 1px solid var(--border); border-right: 1px solid var(--border); background: var(--bg); padding: 14px 16px 170px; }
+.E-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.E-top .r { display: flex; gap: 8px; }
+.E-ib { width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); display: grid; place-items: center; position: relative; }
+.E-ib b { position: absolute; top: -5px; right: -5px; background: var(--cta); color: var(--on-cta); font-size: 11px; border-radius: 999px; padding: 0 6px; }
+.E-nw { padding: 18px 18px 0; overflow: hidden; margin-bottom: 12px; border-radius: 22px; }
+.E-nw .big { font-family: "Syne"; font-weight: 700; font-size: 44px; letter-spacing: -0.035em; line-height: 1.05; margin: 4px 0 10px; }
+.E-nw .chart { height: 90px; margin: 10px -18px 0; }
+.E-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.E-stat { padding: 12px 14px; }
+.E-stat .l { color: var(--muted); font-size: 13px; font-weight: 600; display: flex; gap: 6px; align-items: center; }
+.E-stat .num { font-family: "Syne"; font-weight: 700; font-size: 19px; }
+.E-sec { font-family: "Syne"; font-weight: 700; font-size: 17px; margin: 18px 2px 8px; display: flex; justify-content: space-between; align-items: baseline; }
+.E-rail { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; scroll-snap-type: x mandatory; }
+.E-acct { flex: none; width: 170px; padding: 12px 14px; scroll-snap-align: start; }
+.E-acct .n { color: var(--muted); font-size: 13px; font-weight: 600; margin: 10px 0 2px; }
+.E-acct .num { font-family: "Syne"; font-weight: 700; font-size: 18px; }
+.E-tabs { position: fixed; z-index: 15; bottom: 0; left: 50%; transform: translateX(-50%); width: min(480px, 100%); background: var(--surface); border: 1px solid var(--border); border-bottom: 0; display: grid; grid-template-columns: repeat(5, 1fr); padding: 8px 8px 14px; border-radius: 20px 20px 0 0; }
+.E-tabs a, .E-tabs button { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 11px; font-weight: 700; color: var(--muted); text-decoration: none; border: 0; background: none; padding: 4px; }
+.E-tabs a.on { color: var(--fg); }
+.E-tabs .plus span { width: 46px; height: 46px; border-radius: 16px; background: var(--cta); color: var(--on-cta); display: grid; place-items: center; margin-top: -4px; }
+.E-sheet { position: fixed; z-index: 21; left: 50%; bottom: 0; transform: translateX(-50%); width: min(480px, 100%); background: var(--surface); border: 1px solid var(--border-strong); border-bottom: 0; border-radius: 24px 24px 0 0; padding: 10px 18px 96px; }
+.E-sheet .grab { width: 40px; height: 5px; border-radius: 999px; background: var(--border-strong); margin: 0 auto 12px; }
+body[data-variant="E"] .proto { bottom: 92px; }
 
 /* ---------- Prototype switcher (not part of any design) ---------- */
 .proto { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 100; display: flex; align-items: center; gap: 6px; padding: 6px; border-radius: 999px; background: #ff3d8b; color: #fff; font: 600 13px/1 system-ui, sans-serif; box-shadow: 0 6px 20px rgba(0,0,0,.35); white-space: nowrap; max-width: calc(100vw - 16px); overflow-x: auto; }
 .proto button { background: rgba(255,255,255,.18); color: #fff; border: 0; border-radius: 999px; padding: 7px 11px; font: inherit; }
 .proto button.on { background: #fff; color: #ff3d8b; }
-.proto .lbl { padding: 0 8px; min-width: 130px; text-align: center; }
+.proto .lbl { padding: 0 8px; min-width: 120px; text-align: center; }
 .proto .sep { width: 1px; align-self: stretch; background: rgba(255,255,255,.35); margin: 0 4px; }
 </style>
 </head>
@@ -277,7 +258,8 @@ body[data-variant="C"] {
 <div id="app"></div>
 <div class="proto" id="proto"></div>
 <script>
-const VARIANTS = { A: "Vault", B: "Pulse", C: "Aurora" };
+const VARIANTS = { A: "Solid", B: "Sidebar", C: "Bento", D: "Split", E: "Pocket" };
+const LOGO = `<svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 18.00 194.40 67.30" role="img" aria-label="ledgr"><title>ledgr</title><g transform="translate(-17.6 10) scale(.8)"><path fill="currentColor" fill-rule="evenodd" d="M22 18A8 8 0 0 1 30 10H70A8 8 0 0 1 78 18V90L71 84L64 90L57 84L50 90L43 84L36 90L29 84L22 90ZM36 25H64A3 3 0 0 1 67 28V28A3 3 0 0 1 64 31H36A3 3 0 0 1 33 28V28A3 3 0 0 1 36 25ZM36 38H54A3 3 0 0 1 57 41V41A3 3 0 0 1 54 44H36A3 3 0 0 1 33 41V41A3 3 0 0 1 36 38Z"/><path fill="var(--brand-green)" d="M37 57H63A4 4 0 0 1 67 61V61A4 4 0 0 1 63 65H37A4 4 0 0 1 33 61V61A4 4 0 0 1 37 57Z"/></g><g transform="translate(54.0 70)"><path fill="currentColor" d="M4.80 0.00L4.80 -44.10L12.96 -44.10L12.96 0.00L4.80 0.00Z"/><path fill="currentColor" d="M34.02 0.90Q29.04 0.90 25.24 -1.24Q21.45 -3.39 19.30 -7.15Q17.16 -10.92 17.16 -15.78Q17.16 -21.09 19.26 -25.02Q21.36 -28.95 25.05 -31.12Q28.74 -33.30 33.54 -33.30Q38.64 -33.30 42.21 -30.90Q45.78 -28.50 47.49 -24.15Q49.20 -19.80 48.69 -13.92L40.62 -13.92L40.62 -16.92Q40.62 -21.87 39.05 -24.04Q37.47 -26.22 33.90 -26.22Q29.73 -26.22 27.77 -23.68Q25.80 -21.15 25.80 -16.20Q25.80 -11.67 27.77 -9.20Q29.73 -6.72 33.54 -6.72Q35.94 -6.72 37.65 -7.77Q39.36 -8.82 40.26 -10.80L48.42 -8.46Q46.59 -4.02 42.64 -1.56Q38.70 0.90 34.02 0.90ZM23.28 -13.92L23.28 -19.98L44.76 -19.98L44.76 -13.92L23.28 -13.92Z"/><path fill="currentColor" d="M65.58 0.90Q61.11 0.90 57.75 -1.35Q54.39 -3.60 52.52 -7.47Q50.64 -11.34 50.64 -16.20Q50.64 -21.15 52.54 -25.00Q54.45 -28.86 57.90 -31.08Q61.35 -33.30 66.00 -33.30Q70.62 -33.30 73.77 -31.05Q76.92 -28.80 78.54 -24.93Q80.16 -21.06 80.16 -16.20Q80.16 -11.34 78.52 -7.47Q76.89 -3.60 73.65 -1.35Q70.41 0.90 65.58 0.90ZM66.90 -6.36Q69.63 -6.36 71.27 -7.59Q72.90 -8.82 73.62 -11.04Q74.34 -13.26 74.34 -16.20Q74.34 -19.14 73.62 -21.36Q72.90 -23.58 71.33 -24.81Q69.75 -26.04 67.20 -26.04Q64.47 -26.04 62.71 -24.70Q60.96 -23.37 60.12 -21.13Q59.28 -18.90 59.28 -16.20Q59.28 -13.47 60.09 -11.23Q60.90 -9.00 62.58 -7.68Q64.26 -6.36 66.90 -6.36ZM74.34 0.00L74.34 -22.20L73.32 -22.20L73.32 -43.20L81.54 -43.20L81.54 0.00L74.34 0.00Z"/><path fill="var(--brand-green)" d="M100.80 15.30Q98.04 15.30 95.55 14.41Q93.06 13.53 91.09 11.96Q89.13 10.38 87.90 8.28L95.46 4.62Q96.24 6.06 97.69 6.81Q99.15 7.56 100.86 7.56Q102.69 7.56 104.31 6.94Q105.93 6.33 106.91 5.12Q107.88 3.90 107.82 2.10L107.82 -7.32L108.84 -7.32L108.84 -32.40L115.98 -32.40L115.98 2.22Q115.98 3.42 115.88 4.48Q115.77 5.55 115.50 6.60Q114.72 9.57 112.60 11.49Q110.49 13.41 107.43 14.35Q104.37 15.30 100.80 15.30ZM100.08 0.90Q95.61 0.90 92.25 -1.35Q88.89 -3.60 87.02 -7.47Q85.14 -11.34 85.14 -16.20Q85.14 -21.15 87.05 -25.00Q88.95 -28.86 92.40 -31.08Q95.85 -33.30 100.50 -33.30Q105.12 -33.30 108.27 -31.05Q111.42 -28.80 113.04 -24.93Q114.66 -21.06 114.66 -16.20Q114.66 -11.34 113.02 -7.47Q111.39 -3.60 108.15 -1.35Q104.91 0.90 100.08 0.90ZM101.40 -6.36Q104.13 -6.36 105.77 -7.59Q107.40 -8.82 108.12 -11.04Q108.84 -13.26 108.84 -16.20Q108.84 -19.14 108.12 -21.36Q107.40 -23.58 105.83 -24.81Q104.25 -26.04 101.70 -26.04Q98.97 -26.04 97.22 -24.70Q95.46 -23.37 94.62 -21.13Q93.78 -18.90 93.78 -16.20Q93.78 -13.47 94.59 -11.23Q95.40 -9.00 97.08 -7.68Q98.76 -6.36 101.40 -6.36Z"/><path fill="currentColor" d="M121.38 0.00L121.38 -32.40L128.58 -32.40L128.58 -24.48L127.80 -25.50Q128.43 -27.18 129.48 -28.56Q130.53 -29.94 132.06 -30.84Q133.23 -31.56 134.61 -31.96Q135.99 -32.37 137.46 -32.48Q138.93 -32.58 140.40 -32.40L140.40 -24.78Q139.05 -25.20 137.26 -25.06Q135.48 -24.93 134.04 -24.24Q132.60 -23.58 131.61 -22.48Q130.62 -21.39 130.11 -19.90Q129.60 -18.42 129.60 -16.56L129.60 0.00L121.38 0.00Z"/></g></svg>`;
 
 const params = new URLSearchParams(location.search);
 const state = {
@@ -295,11 +277,14 @@ const accounts = [
   { name: "Cash", kind: "asset", balance: 3250, icon: "wallet", sub: "In hand" },
   { name: "Mutual funds", kind: "asset", balance: 892140.22, icon: "trending-up", sub: "Market Value" },
   { name: "Flat, Baner", kind: "asset", balance: 8500000, icon: "home", sub: "Valued 1 Oct" },
-  { name: "HDFC Regalia", kind: "liability", balance: 42816.4, icon: "credit-card", sub: "Due 22 Oct", last4: "4417" },
-  { name: "Amazon Pay ICICI", kind: "liability", balance: -1240, icon: "credit-card", sub: "No bill due", last4: "0952" },
+  { name: "HDFC Regalia", kind: "liability", balance: 42816.4, icon: "credit-card", sub: "Due 22 Oct" },
+  { name: "Amazon Pay ICICI", kind: "liability", balance: -1240, icon: "credit-card", sub: "No bill due" },
   { name: "Home loan", kind: "liability", balance: 3145000, icon: "key-round", sub: "EMI on 5th" },
 ];
-const netWorth = accounts.reduce((s, a) => s + (a.kind === "asset" ? a.balance : -a.balance), 0);
+const assets = accounts.filter((a) => a.kind === "asset");
+const liabilities = accounts.filter((a) => a.kind === "liability");
+const sum = (l) => l.reduce((s, a) => s + a.balance, 0);
+const netWorth = sum(assets) - sum(liabilities);
 const netWorthChange = 38214.6;
 const history = [5821000, 5874000, 5902500, 5889000, 5968000, 6043000, 6081500, 6150000, 6236000, 6312000, 6417330, netWorth];
 const months = ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"];
@@ -309,18 +294,18 @@ const EXP = {
   Groceries: { icon: "shopping-basket", hue: "#12b886" },
   "Eating out": { icon: "utensils", hue: "#ff6b3d" },
   Shopping: { icon: "shopping-bag", hue: "#e64980" },
-  Bills: { icon: "zap", hue: "#f5b014" },
+  Bills: { icon: "zap", hue: "#e3a008" },
   Transport: { icon: "car", hue: "#1c8cff" },
   Salary: { icon: "briefcase", hue: "#0b8a5f" },
   Transfer: { icon: "arrow-left-right", hue: "#64748b" },
 };
-const spend = [
-  { name: "Rent", spent: 28000 }, { name: "Groceries", spent: 8640, budget: 12000 },
-  { name: "Eating out", spent: 6120, budget: 5000 }, { name: "Shopping", spent: 4310 },
-  { name: "Bills", spent: 3890 }, { name: "Transport", spent: 1450, budget: 4000 },
+const exp = (n) => EXP[n] || EXP.Transfer;
+const budgets = [
+  { name: "Groceries", spent: 8640, budget: 12000 },
+  { name: "Eating out", spent: 6120, budget: 5000 },
+  { name: "Transport", spent: 1450, budget: 4000 },
 ];
-const budgets = spend.filter((s) => s.budget);
-const totalSpent = spend.reduce((s, x) => s + x.spent, 0);
+const month = { spent: 52410, received: 145000 };
 
 const txns = [
   { date: "Today", party: "Swiggy", to: "Eating out", account: "HDFC Regalia", kind: "liability", amount: 420 },
@@ -356,183 +341,194 @@ const txAmt = (t) => srDir(t) + amount(t.amount, { role: "change", kind: t.kind 
 const txWho = (t) => t.party || "Card payment";
 const txSub = (t) => t.note ? `${t.note} → ${t.account}` : `${t.to} · ${t.account}`;
 const ic = (name) => `<i data-lucide="${name}"></i>`;
-const exp = (name) => EXP[name] || EXP.Transfer;
-const logo = () => `<img src="../brand/svg/ledgr-logo-on-${document.documentElement.dataset.resolved}.svg" alt="ledgr">`;
+const tile = (name, cls = "") => `<span class="ic ${cls}" style="background:${exp(name).hue}">${ic(exp(name).icon)}</span>`;
 const byDay = (list) => [...new Set(list.map((t) => t.date))].map((d) => [d, list.filter((t) => t.date === d)]);
-const NAV = ["Home", "Transactions", "Budgets", "Accounts", "Investments", "Goals"];
+const NAV = [["Home", "layout-grid"], ["Transactions", "list"], ["Budgets", "pie-chart"], ["Accounts", "landmark"], ["Investments", "trending-up"], ["Goals", "target"]];
 
-function linePath(w, h, pad = 6) {
-  const min = Math.min(...history), max = Math.max(...history);
+// ---------- shared pieces ----------
+function chart(w, h, { labels = false, dot = false } = {}) {
+  const pad = 12, min = Math.min(...history), max = Math.max(...history);
   const pts = history.map((v, i) => [(i / (history.length - 1)) * w, pad + (1 - (v - min) / (max - min)) * (h - pad * 2)]);
   let d = `M${pts[0][0]},${pts[0][1]}`;
   for (let i = 1; i < pts.length; i++) {
     const [x0, y0] = pts[i - 1], [x1, y1] = pts[i], cx = (x0 + x1) / 2;
     d += ` C${cx},${y0} ${cx},${y1} ${x1},${y1}`;
   }
-  return { line: d, area: `${d} L${w},${h} L0,${h} Z`, last: pts[pts.length - 1] };
+  const id = "g" + Math.random().toString(36).slice(2, 7);
+  const last = pts[pts.length - 1];
+  return `<div class="chart"><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    <defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--good)" stop-opacity=".28"/><stop offset="1" stop-color="var(--good)" stop-opacity="0"/></linearGradient></defs>
+    <path d="${d} L${w},${h} L0,${h} Z" fill="url(#${id})"/>
+    <path d="${d}" fill="none" stroke="var(--good)" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
+    ${dot ? `<circle cx="${last[0]}" cy="${last[1]}" r="4" fill="var(--good)" vector-effect="non-scaling-stroke"/>` : ""}
+  </svg>${labels ? `<div style="display:flex;justify-content:space-between;padding:6px 24px 12px;color:var(--muted);font-size:12px;font-weight:600">${months.map((m) => `<span>${m}</span>`).join("")}</div>` : ""}</div>`;
+}
+const delta = () => `<span class="pill">${amount(netWorthChange, { role: "change" })} <span style="color:var(--muted)">this month</span></span>`;
+const range = () => `<span class="seg"><button>1M</button><button>6M</button><button class="on">1Y</button><button>All</button></span>`;
+const budgetRows = () => budgets.map((b) => `<div class="bud"><div class="t">${tile(b.name, "sm")}<span class="n">${b.name}</span>${amount(b.budget - b.spent, { paise: false })}</div><div class="bar"><i style="width:${Math.min(100, (b.spent / b.budget) * 100)}%;background:${b.spent > b.budget ? "var(--bad)" : exp(b.name).hue}"></i></div><div class="s">${amount(b.spent, { paise: false })} of ${amount(b.budget, { paise: false })}${b.spent > b.budget ? " · over budget" : " · left to spend"}</div></div>`).join("");
+const txRow = (t, withDate = true) => `<div class="row">${tile(t.to, "round")}<div class="mid">${txWho(t)}<small>${withDate ? t.date + " · " : ""}${txSub(t)}</small></div>${txAmt(t)}</div>`;
+const recentByDay = () => byDay(txns).map(([d, ts]) => `<div class="day">${d}</div>${ts.map((t) => txRow(t, false)).join("")}`).join("");
+const acctRow = (a) => `<div class="row"><span class="ic soft sm">${ic(a.icon)}</span><div class="mid">${a.name}<small>${a.sub}</small></div>${accAmt(a)}</div>`;
+
+function form({ compact = false } = {}) {
+  return `<div class="fm">
+    <div class="seg"><button class="on">Spent</button><button>Received</button><button>Moved</button></div>
+    <input class="amt" value="₹2,386.75" aria-label="Amount">
+    <div class="lbl">To</div>
+    <div class="to">${["Groceries", "Eating out", "Rent", "Shopping", "Bills", "Transport"].slice(0, compact ? 4 : 6).map((n, i) => `<button class="${i ? "" : "on"}">${tile(n)}${n}</button>`).join("")}</div>
+    <div class="grid">
+      <label class="field">From<select><option>HDFC Savings</option><option>SBI Salary</option><option>HDFC Regalia</option><option>Cash</option></select></label>
+      <label class="field">Date<input type="date" value="2026-10-16"></label>
+      <label class="field ${compact ? "full" : ""}">Party<input value="BigBasket"></label>
+      ${compact ? "" : `<label class="field">Note<input placeholder="Optional"></label>`}
+    </div>
+    <div class="act">${compact ? "" : `<button class="btn ghost" data-act="form">Cancel</button>`}<button class="btn" ${compact ? 'style="width:100%"' : ""}>Save transaction</button></div>
+  </div>`;
 }
 
-const fields = {
-  from: `<select><option>HDFC Savings</option><option>SBI Salary</option><option>HDFC Regalia</option><option>Cash</option></select>`,
-  date: `<input type="date" value="2026-10-16">`,
-  party: `<input value="BigBasket">`,
-  note: `<input placeholder="Optional">`,
-};
-
-// ================= A: Vault =================
+// ================= A: Solid =================
 function renderA() {
-  const { line, area, last } = linePath(600, 140);
-  const ring = (b) => {
-    const r = 40, c = 2 * Math.PI * r, p = Math.min(1, b.spent / b.budget);
-    const color = b.spent > b.budget ? "var(--bad)" : "var(--good)";
-    return `<svg viewBox="0 0 92 92"><circle cx="46" cy="46" r="${r}" fill="none" stroke="var(--line)" stroke-width="7"/><circle cx="46" cy="46" r="${r}" fill="none" stroke="${color}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${c * p} ${c}" style="filter:drop-shadow(0 0 6px ${color})"/></svg>`;
-  };
-  const cards = accounts.filter((a) => a.kind === "liability" || a.name === "HDFC Savings");
-  return `
-  <header class="v-top">${logo()}<nav>${NAV.map((n, i) => `<a href="#" class="${i ? "" : "on"}">${n}</a>`).join("")}</nav><button class="v-btn" data-act="form">Add transaction</button></header>
-  <main class="v-wrap">
-    <section class="v-hero">
-      <div>
-        <div class="v-label">Net Worth</div>
-        <div class="v-big" id="hero">${amount(netWorth)}</div>
-        <span class="v-delta v-in">${amount(netWorthChange, { role: "change" })} <span style="color:var(--muted)">this month</span></span>
-      </div>
-      <div class="v-chart v-emb">
-        <svg viewBox="0 0 600 140" preserveAspectRatio="none">
-          <defs><linearGradient id="va" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--good)" stop-opacity=".35"/><stop offset="1" stop-color="var(--good)" stop-opacity="0"/></linearGradient></defs>
-          <path d="${area}" fill="url(#va)"/><path d="${line}" fill="none" stroke="var(--good)" stroke-width="2.5" vector-effect="non-scaling-stroke" style="filter:drop-shadow(0 0 8px var(--good))"/>
-          <circle cx="${last[0]}" cy="${last[1]}" r="5" fill="var(--good)"/>
-        </svg>
-      </div>
+  return `<div class="A-app">
+    <header class="A-top">${LOGO}<nav>${NAV.slice(0, 5).map(([n], i) => `<a href="#" class="${i ? "" : "on"}">${n}</a>`).join("")}</nav><button class="btn" data-act="form">${ic("plus")} Add</button></header>
+    <section class="A-hero panel rel"><div class="glow"></div>
+      <div style="color:var(--muted);font-weight:600">Net Worth</div>
+      <div class="big" id="hero">${amount(netWorth)}</div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">${delta()}${range()}</div>
+      ${chart(1000, 170, { labels: true, dot: true })}
     </section>
-    <h2 class="v-h2">Cards and accounts <small>8 Accounts</small></h2>
-    <div class="v-cards">
-      ${cards.map((a, i) => `<div class="v-card c${(i % 4) + 1}">
-        <div class="row"><div class="chip"></div><span class="kind">${a.kind === "liability" ? "Owed" : "Balance"}</span></div>
-        <div><div class="nm">${a.name}${a.last4 ? ` ···· ${a.last4}` : ""}</div><div class="amt">${accAmt(a)}</div></div>
-        <div class="row"><span class="kind">${a.sub}</span>${ic(a.icon)}</div>
-      </div>`).join("")}
+    <div class="A-rail">${[accounts[0], accounts[3], accounts[5], accounts[7]].map((a) => `<div class="A-acct panel"><div class="top"><span class="ic soft">${ic(a.icon)}</span>${a.kind === "liability" ? "Owed" : a.sub}</div><div><div class="n">${a.name}</div>${accAmt(a)}</div></div>`).join("")}</div>
+    <div class="A-cols">
+      <section class="panel"><div class="ph"><h2>Budgets</h2><a href="#">16 days left</a></div><div class="pb">${budgetRows()}</div></section>
+      <section class="panel"><div class="ph"><h2>Recent</h2><a href="#">View all</a></div><div class="pb">${txns.map((t) => txRow(t)).join("")}</div></section>
     </div>
-    <div class="v-cols">
-      <section class="v-emb v-pad"><h2 class="v-h2">October budgets <small>16 days left</small></h2>
-        <div class="v-rings">${budgets.map((b) => `<div class="v-ring v-in">${ring(b)}<div class="n">${b.name}</div><div class="l">${amount(b.budget - b.spent, { paise: false })} left</div></div>`).join("")}</div>
-      </section>
-      <section class="v-emb v-pad"><h2 class="v-h2">Recent <small>View all</small></h2>
-        ${txns.map((t) => `<div class="v-tx"><div class="v-ico v-in">${ic(exp(t.to).icon)}</div><div class="mid"><div>${txWho(t)}</div><div>${t.date} · ${txSub(t)}</div></div>${txAmt(t)}</div>`).join("")}
-      </section>
-    </div>
-  </main>
-  ${state.form ? `<div class="v-modal-bg" data-act="form"></div>
-  <section class="v-modal v-emb" role="dialog" aria-label="Add transaction">
-    <h3>Add transaction</h3>
-    <input class="v-amt-in v-in" value="₹2,386.75" aria-label="Amount">
-    <div class="v-fields">
-      <label class="v-in">From${fields.from}</label>
-      <label class="v-in">To<select><option>Groceries</option><option>Eating out</option><option>Rent</option></select></label>
-      <label class="v-in">Party${fields.party}</label><label class="v-in">Date${fields.date}</label>
-      <label class="v-in full">Note${fields.note}</label>
-    </div>
-    <div style="display:flex;gap:12px;justify-content:flex-end"><button class="v-btn ghost" data-act="form">Cancel</button><button class="v-btn">Save transaction</button></div>
-  </section>` : ""}`;
+  </div>
+  ${state.form ? `<div class="scrim" data-act="form"></div><section class="A-sheet" role="dialog" aria-label="Add transaction"><h3>Add transaction</h3>${form()}</section>` : ""}`;
 }
 
-// ================= B: Pulse =================
+// ================= B: Sidebar =================
 function renderB() {
-  const { line, area } = linePath(1000, 110, 14);
-  let acc = 0;
-  const stops = spend.map((s) => { const a = acc; acc += (s.spent / totalSpent) * 360; return `${exp(s.name).hue} ${a}deg ${acc - 1.5}deg, transparent ${acc - 1.5}deg ${acc}deg`; }).join(", ");
-  const insights = [
-    { icon: "utensils", hue: "#ff6b3d", t: `Eating out is over budget`, s: `by ${state.privacy ? "₹ ••••" : "₹" + group(1120)[0]}` },
-    { icon: "briefcase", hue: "#0b8a5f", t: "Salary arrived", s: "Acme Corp, yesterday" },
-    { icon: "credit-card", hue: "#6d5efc", t: "Regalia bill due 22 Oct", s: "6 days left" },
-    { icon: "inbox", hue: "#f5b014", t: "3 Drafts to review", s: "From Quick Add" },
-  ];
-  return `
-  <div class="p-app">
-    <header class="p-top">${logo()}<div class="r"><button class="p-ib" aria-label="Search">${ic("search")}</button><button class="p-ib" aria-label="Drafts">${ic("bell")}</button></div></header>
-    <section class="p-hero">
-      <div class="label">${ic("sparkles")} Net Worth</div>
-      <div class="p-big" id="hero">${amount(netWorth)}</div>
-      <span class="p-pill">${ic("trending-up")} ${amount(netWorthChange, { role: "change" })} this month</span>
-      <button class="add" data-act="form">${ic("plus")} Add</button>
-      <div class="p-spark"><svg viewBox="0 0 1000 110" preserveAspectRatio="none">
-        <defs><linearGradient id="pb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
-        <path d="${area}" fill="url(#pb)"/><path d="${line}" fill="none" stroke="#fff" stroke-width="3" vector-effect="non-scaling-stroke"/></svg></div>
-    </section>
-    <div class="p-insights">${insights.map((x) => `<div class="p-ins"><span class="ic" style="background:${x.hue}">${ic(x.icon)}</span><div>${x.t}<small>${x.s}</small></div></div>`).join("")}</div>
-    <div class="p-grid">
-      <section class="p-card"><h2>Spent in October <a href="#">Report</a></h2>
-        <div class="p-donut" style="background:conic-gradient(${stops})"><div class="c"><div><b>${amount(totalSpent, { paise: false })}</b><span>across 6 Expense Accounts</span></div></div></div>
-        ${spend.slice(0, 4).map((s) => `<div class="p-leg"><span class="p-dot" style="background:${exp(s.name).hue}">${ic(exp(s.name).icon)}</span><div class="n">${s.name}${s.budget ? `<small>${amount(s.budget - s.spent, { paise: false })} left of ${amount(s.budget, { paise: false })}</small><div class="p-bar"><i style="width:${Math.min(100, (s.spent / s.budget) * 100)}%;background:${s.spent > s.budget ? "var(--bad)" : exp(s.name).hue}"></i></div>` : "<small>No Budget</small>"}</div>${amount(s.spent, { paise: false })}</div>`).join("")}
+  return `<div class="B-shell">
+    <aside class="B-side">${LOGO}
+      ${NAV.map(([n, i], k) => `<a href="#" class="${k ? "" : "on"}">${ic(i)}${n}</a>`).join("")}
+      <a href="#">${ic("inbox")}Drafts<span class="badge">3</span></a>
+      <button class="btn" data-act="form">${ic("plus")} Add transaction</button>
+    </aside>
+    <main class="B-main">
+      <div class="B-head"><h1>Home</h1><span>Friday, 16 October</span></div>
+      <div class="B-row1">
+        <section class="B-nw panel rel"><div class="glow"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="color:var(--muted);font-weight:600">Net Worth</span>${range()}</div>
+          <div class="big" id="hero">${amount(netWorth)}</div>${delta()}
+          ${chart(1000, 120, { dot: true })}
+        </section>
+        <section class="B-month panel">
+          <div class="ph"><h2>October</h2><a href="#">Report</a></div>
+          <div class="cell"><span class="ic sm" style="background:#ff6b3d">${ic("arrow-up-right")}</span><span class="l">Spent</span>${amount(month.spent, { paise: false })}</div>
+          <div class="cell"><span class="ic sm" style="background:#0b8a5f">${ic("arrow-down-left")}</span><span class="l">Received</span>${amount(month.received, { paise: false })}</div>
+          <div class="cell"><span class="ic sm" style="background:#6d5efc">${ic("piggy-bank")}</span><span class="l">Kept</span>${amount(month.received - month.spent, { paise: false })}</div>
+        </section>
+      </div>
+      <div class="B-row2">
+        <section class="panel"><div class="ph"><h2>Accounts</h2><a href="#">Manage</a></div>
+          <table class="B-tbl"><tbody>
+            <tr class="grp"><td>Assets</td><td class="r">${amount(sum(assets))}</td></tr>
+            ${assets.map((a) => `<tr><td><div class="who"><span class="ic soft sm">${ic(a.icon)}</span>${a.name}</div></td><td class="r">${accAmt(a)}</td></tr>`).join("")}
+            <tr class="grp"><td>Liabilities</td><td class="r">${amount(sum(liabilities), { role: "liability" })}</td></tr>
+            ${liabilities.map((a) => `<tr><td><div class="who"><span class="ic soft sm">${ic(a.icon)}</span>${a.name}</div></td><td class="r">${accAmt(a)}</td></tr>`).join("")}
+          </tbody></table>
+        </section>
+        <section class="panel"><div class="ph"><h2>Budgets</h2><a href="#">16 days left</a></div><div class="pb">${budgetRows()}</div></section>
+      </div>
+      <section class="panel"><div class="ph"><h2>Recent transactions</h2><a href="#">View all</a></div>
+        <table class="B-tbl"><thead><tr><th>Date</th><th>Party</th><th>Account</th><th class="r">Amount</th></tr></thead><tbody>
+        ${txns.map((t) => `<tr><td class="dim">${t.date}</td><td><div class="who">${tile(t.to, "round sm")}${txWho(t)}</div></td><td class="dim">${txSub(t)}</td><td class="r" style="font-weight:700">${txAmt(t)}</td></tr>`).join("")}
+        </tbody></table>
       </section>
-      <section class="p-card"><h2>Accounts <a href="#">All 8</a></h2>
-        ${accounts.map((a) => `<div class="p-acct"><span class="p-dot" style="background:${a.kind === "liability" ? "#6d5efc" : a.icon === "home" ? "#f5b014" : a.icon === "trending-up" ? "#1c8cff" : "#0b8a5f"}">${ic(a.icon)}</span><div class="n">${a.name}<small>${a.sub}</small></div>${accAmt(a)}</div>`).join("")}
-      </section>
-      <section class="p-card"><h2>Recent <a href="#">See all</a></h2>
-        ${byDay(txns).map(([d, ts]) => `<div class="p-day">${d}</div>${ts.map((t) => `<div class="p-acct"><span class="p-dot" style="background:${exp(t.to).hue}">${ic(exp(t.to).icon)}</span><div class="n">${txWho(t)}<small>${txSub(t)}</small></div>${txAmt(t)}</div>`).join("")}`).join("")}
-      </section>
-    </div>
+    </main>
   </div>
-  ${state.form ? `<div class="p-drawer-bg" data-act="form"></div>
-  <aside class="p-drawer" role="dialog" aria-label="Add transaction">
-    <h3>Add transaction <button data-act="form" aria-label="Close">${ic("x")}</button></h3>
-    <div class="p-seg"><button class="on">Spent</button><button>Received</button><button>Moved</button></div>
-    <input class="p-amt" value="₹2,386.75" aria-label="Amount">
-    <div class="p-lbl">Spent on</div>
-    <div class="p-picks">${["Groceries", "Eating out", "Rent", "Shopping", "Bills", "Transport"].map((n, i) => `<button class="p-pick ${i ? "" : "on"}"><span class="p-dot" style="background:${exp(n).hue}">${ic(exp(n).icon)}</span>${n}</button>`).join("")}<button class="p-pick"><span class="p-dot" style="background:var(--muted)">${ic("plus")}</span>More</button></div>
-    <div class="p-lbl">Paid from</div>
-    <div class="p-chips"><button class="p-chip on">${ic("landmark")} HDFC Savings</button><button class="p-chip">${ic("credit-card")} Regalia</button><button class="p-chip">${ic("wallet")} Cash</button></div>
-    <div class="p-lbl">Details</div>
-    <div class="p-in"><label>Party${fields.party}</label><label>Date${fields.date}</label></div>
-    <button class="p-go">Save transaction</button>
-  </aside>` : ""}`;
+  ${state.form ? `<div class="scrim" data-act="form"></div><aside class="B-drawer" role="dialog" aria-label="Add transaction"><h3>Add transaction <button class="btn ghost" data-act="form" aria-label="Close" style="padding:8px">${ic("x")}</button></h3>${form()}</aside>` : ""}`;
 }
 
-// ================= C: Aurora =================
+// ================= C: Bento =================
 function renderC() {
-  const { line, area, last } = linePath(1000, 200, 16);
-  const tiles = accounts.filter((a) => a.icon !== "home" || true);
-  return `
-  <div class="a-sky"><i></i><i></i><i></i></div>
-  <div class="a-app">
-    <header class="a-top a-g">${logo()}<nav>${NAV.slice(0, 5).map((n, i) => `<a href="#" class="${i ? "" : "on"}">${n}</a>`).join("")}</nav></header>
-    <section class="a-hero">
-      <div class="label">Net Worth</div>
-      <div class="a-big" id="hero">${amount(netWorth)}</div>
-      <div class="row"><span class="a-pill a-g">${amount(netWorthChange, { role: "change" })} this month</span><span class="a-seg a-g"><button>1M</button><button>6M</button><button class="on">1Y</button><button>All</button></span></div>
-    </section>
-    <div class="a-chart"><svg viewBox="0 0 1000 200" preserveAspectRatio="none">
-      <defs><linearGradient id="ca" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--good)" stop-opacity=".28"/><stop offset="1" stop-color="var(--good)" stop-opacity="0"/></linearGradient></defs>
-      <path d="${area}" fill="url(#ca)"/><path d="${line}" fill="none" stroke="var(--good)" stroke-width="3" vector-effect="non-scaling-stroke"/>
-      ${months.map((m, i) => `<text x="${(i / 11) * 1000}" y="226" font-size="13" fill="var(--muted)" text-anchor="${i === 0 ? "start" : i === 11 ? "end" : "middle"}" style="font-family:Figtree">${m}</text>`).join("")}
-    </svg></div>
-    <h2 class="a-h2">Accounts <small>View all</small></h2>
-    <div class="a-rail">${tiles.map((a) => `<div class="a-acct a-g"><div style="display:flex;justify-content:space-between;align-items:center"><span class="ic">${ic(a.icon)}</span><span class="n">${a.kind === "liability" ? "Owed" : a.sub}</span></div><div><div class="n">${a.name}</div>${accAmt(a)}</div></div>`).join("")}</div>
-    <div class="a-cols">
-      <section class="a-g a-pad"><h2 class="a-h2">Budgets <small>16 days left</small></h2>
-        ${budgets.map((b) => `<div class="a-bud"><span class="ic" style="background:${exp(b.name).hue}">${ic(exp(b.name).icon)}</span><span class="n">${b.name}</span>${amount(b.budget - b.spent, { paise: false })}<div class="bar"><i style="width:${Math.min(100, (b.spent / b.budget) * 100)}%;background:${b.spent > b.budget ? "var(--bad)" : exp(b.name).hue}"></i></div></div>`).join("")}
+  return `<div class="C-app">
+    <header class="C-top panel">${LOGO}<nav>${NAV.map(([n], i) => `<a href="#" class="${i ? "" : "on"}">${n}</a>`).join("")}</nav><button class="btn ghost" style="padding:8px 12px">${ic("search")}</button></header>
+    <div class="C-grid">
+      <section class="C-nw panel rel"><div class="glow"></div>
+        <div class="top"><span style="color:var(--muted);font-weight:600">Net Worth</span>${range()}</div>
+        <div class="big" id="hero">${amount(netWorth)}</div><div>${delta()}</div>
+        ${chart(1000, 160, { dot: true })}
       </section>
-      <section class="a-g a-pad"><h2 class="a-h2">Recent <small>View all</small></h2>
-        ${txns.map((t) => `<div class="a-tx"><span class="ic" style="background:${exp(t.to).hue}">${ic(exp(t.to).icon)}</span><div class="mid">${txWho(t)}<small>${t.date} · ${txSub(t)}</small></div>${txAmt(t)}</div>`).join("")}
-      </section>
+      <section class="C-add panel"><h3>Add transaction</h3>${form({ compact: true })}</section>
+      ${[accounts[0], accounts[3], accounts[5], accounts[7]].map((a) => `<div class="C-acct panel"><span class="ic soft">${ic(a.icon)}</span><div class="n">${a.name}<small>${a.kind === "liability" ? "Owed" : a.sub}</small></div>${accAmt(a, { paise: false })}</div>`).join("")}
+      <section class="C-bud panel"><div class="ph"><h2>Budgets</h2><a href="#">16 days left</a></div><div class="pb">${budgetRows()}</div></section>
+      <section class="C-rec panel"><div class="ph"><h2>Recent</h2><a href="#">View all</a></div><div class="pb">${recentByDay()}</div></section>
     </div>
+  </div>`;
+}
+
+// ================= D: Split =================
+function renderD() {
+  return `<div class="D-shell">
+    <aside class="D-left">${LOGO}
+      <div class="D-nwbox rel"><div class="glow"></div>
+        <div style="color:var(--muted);font-weight:600">Net Worth</div>
+        <div class="big" id="hero">${amount(netWorth)}</div>${delta()}
+        ${chart(600, 100, { dot: true })}
+      </div>
+      <div class="D-sec">Budgets <small>16 days left</small></div>${budgetRows()}
+      <div class="D-sec">Assets <small>${amount(sum(assets), { paise: false })}</small></div>${assets.map(acctRow).join("")}
+      <div class="D-sec">Liabilities <small>${amount(sum(liabilities), { role: "liability", paise: false })} owed</small></div>${liabilities.map(acctRow).join("")}
+    </aside>
+    <main class="D-right">
+      <nav class="D-tabs">${["Activity", "Budgets", "Accounts", "Investments", "Goals"].map((n, i) => `<a href="#" class="${i ? "" : "on"}">${n}</a>`).join("")}</nav>
+      <div class="D-entry panel">
+        <label class="field amt">Amount<input value="2,386.75"></label>
+        <label class="field">To<select><option>Groceries</option><option>Eating out</option><option>Rent</option></select></label>
+        <label class="field">From<select><option>HDFC Savings</option><option>HDFC Regalia</option></select></label>
+        <label class="field">Date<input type="date" value="2026-10-16"></label>
+        <button class="btn" style="height:40px">${ic("plus")} Add</button>
+      </div>
+      <p class="D-hint">Add a Party, note or more Splits after saving.</p>
+      <section class="D-feed panel">
+        ${byDay(txns).map(([d, ts]) => `<div class="day"><span>${d}</span><span>${ts.length} ${ts.length > 1 ? "transactions" : "transaction"}</span></div>${ts.map((t) => txRow(t, false)).join("")}`).join("")}
+      </section>
+    </main>
+  </div>`;
+}
+
+// ================= E: Pocket =================
+function renderE() {
+  return `<div class="E-frame">
+    <header class="E-top">${LOGO}<div class="r"><button class="E-ib" aria-label="Search">${ic("search")}</button><button class="E-ib" aria-label="Drafts">${ic("inbox")}<b>3</b></button></div></header>
+    <section class="E-nw panel rel"><div class="glow"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="color:var(--muted);font-weight:600">Net Worth</span>${range()}</div>
+      <div class="big" id="hero">${amount(netWorth)}</div>${delta()}
+      ${chart(480, 90, { dot: true })}
+    </section>
+    <div class="E-stats">
+      <div class="E-stat panel"><div class="l">${ic("arrow-up-right")} Spent in Oct</div>${amount(month.spent, { paise: false })}</div>
+      <div class="E-stat panel"><div class="l">${ic("arrow-down-left")} Received</div>${amount(month.received, { paise: false })}</div>
+    </div>
+    <div class="E-sec">Accounts <a class="link" href="#">All 8</a></div>
+    <div class="E-rail">${accounts.map((a) => `<div class="E-acct panel"><span class="ic soft sm">${ic(a.icon)}</span><div class="n">${a.name}</div>${accAmt(a, { paise: false })}</div>`).join("")}</div>
+    <div class="E-sec">Budgets <a class="link" href="#">16 days left</a></div>
+    <section class="panel"><div class="pb">${budgetRows()}</div></section>
+    <div class="E-sec">Recent <a class="link" href="#">See all</a></div>
+    <section class="panel"><div class="pb">${recentByDay()}</div></section>
   </div>
-  ${state.form ? `<div class="a-scrim" data-act="form"></div>
-  <section class="a-sheet a-g" role="dialog" aria-label="Add transaction"><div class="grab"></div>
-    <div class="a-seg a-g"><button class="on">Spent</button><button>Received</button><button>Moved</button></div>
-    <input class="a-amt" value="₹2,386.75" aria-label="Amount">
-    <div class="a-to">${["Groceries", "Eating out", "Rent", "Shopping", "Bills", "Transport"].map((n, i) => `<button class="${i ? "" : "on"}"><span style="background:${exp(n).hue}">${ic(exp(n).icon)}</span>${n}</button>`).join("")}</div>
-    <div class="a-f"><label>From${fields.from}</label><label>Party${fields.party}</label><label>Date${fields.date}</label></div>
-    <button class="a-go">Save transaction</button>
-  </section>` : `<button class="a-fab" data-act="form">${ic("plus")} Add</button>`}`;
+  <nav class="E-tabs">
+    <a href="#" class="on">${ic("layout-grid")}Home</a><a href="#">${ic("list")}Activity</a>
+    <button class="plus" data-act="form" aria-label="Add transaction"><span>${ic("plus")}</span></button>
+    <a href="#">${ic("pie-chart")}Budgets</a><a href="#">${ic("menu")}More</a>
+  </nav>
+  ${state.form ? `<div class="scrim" data-act="form"></div><section class="E-sheet" role="dialog" aria-label="Add transaction"><div class="grab"></div>${form()}</section>` : ""}`;
 }
 
 // ---------- shell ----------
 function resolveTheme() {
   const root = document.documentElement;
   if (state.theme === "system") delete root.dataset.theme; else root.dataset.theme = state.theme;
-  const dark = state.theme === "dark" || (state.theme === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
-  root.dataset.resolved = dark ? "dark" : "light";
 }
 
 function sync() {
@@ -557,10 +553,11 @@ function countUp() {
   requestAnimationFrame(step);
 }
 
+const RENDER = { A: renderA, B: renderB, C: renderC, D: renderD, E: renderE };
 function render(animate = false) {
   resolveTheme();
   document.body.dataset.variant = state.variant;
-  document.getElementById("app").innerHTML = { A: renderA, B: renderB, C: renderC }[state.variant]();
+  document.getElementById("app").innerHTML = RENDER[state.variant]();
   window.lucide?.createIcons();
   const themes = { system: "Auto", light: "Light", dark: "Dark" };
   document.getElementById("proto").innerHTML = `
@@ -597,7 +594,6 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowRight") cycle(1);
   if (e.key === "Escape" && state.form) { state.form = false; render(); }
 });
-matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => render());
 render(true);
 </script>
 </body>
