@@ -1,0 +1,495 @@
+<!doctype html>
+<!--
+  PROTOTYPE, throwaway. Answers "What does ledgr look like?" (issue #2).
+  Three visual languages for one Home screen (amounts, recent Transactions, an Add Transaction form),
+  switchable via ?variant=A|B|C. The bottom bar also flips theme, Privacy Mode and Number Format.
+  Open the file in a browser. No build, no persistence.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ledgr visual language</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Archivo:wdth,wght@62..125,400..800&family=Manrope:wght@400..800&display=swap" rel="stylesheet">
+<style>
+:root { color-scheme: light dark; }
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body { -webkit-font-smoothing: antialiased; }
+button, input, select { font: inherit; color: inherit; }
+.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+/* ---------- Variant A: Quiet ledger ---------- */
+body[data-variant="A"] {
+  --bg: light-dark(#f5f6f6, #000000);
+  --surface: light-dark(#ffffff, #0f1011);
+  --surface-muted: light-dark(#f0f2f2, #17191a);
+  --fg: light-dark(#121418, #edeeef);
+  --muted: light-dark(#5e6670, #8b9299);
+  --border: light-dark(#e3e6e8, #222527);
+  --primary: light-dark(#13785a, #5fcb9f);
+  --on-primary: light-dark(#ffffff, #000000);
+  --good: light-dark(#13785a, #5fcb9f);
+  --bad: light-dark(#b42318, #ff7a6e);
+  --ring: var(--primary);
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  font-size: 14px; line-height: 1.45;
+  background: var(--bg); color: var(--fg);
+}
+.a-shell { display: grid; grid-template-columns: 220px 1fr 340px; min-height: 100vh; }
+.a-shell.noform { grid-template-columns: 220px 1fr; }
+.a-nav { border-right: 1px solid var(--border); padding: 20px 12px; display: flex; flex-direction: column; gap: 2px; }
+.a-nav img { height: 26px; margin: 0 8px 20px; }
+.a-nav a { padding: 7px 10px; border-radius: 6px; color: var(--muted); text-decoration: none; }
+.a-nav a.on { background: var(--surface-muted); color: var(--fg); font-weight: 500; }
+.a-main { padding: 28px 32px 120px; max-width: 980px; }
+.a-head { display: flex; justify-content: space-between; align-items: end; margin-bottom: 24px; }
+.a-head h1 { font-size: 13px; font-weight: 500; color: var(--muted); margin: 0 0 4px; }
+.a-nw { font-size: 34px; font-weight: 600; letter-spacing: -0.02em; }
+.a-nw small { font-size: 13px; font-weight: 400; color: var(--muted); margin-left: 8px; letter-spacing: 0; }
+.a-btn { background: var(--primary); color: var(--on-primary); border: 0; border-radius: 6px; padding: 8px 14px; font-weight: 500; cursor: pointer; }
+.a-btn.ghost { background: transparent; color: var(--fg); border: 1px solid var(--border); }
+.a-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.a-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+.a-panel h2 { font-size: 13px; font-weight: 600; margin: 0; padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
+.a-panel h2 span { font-weight: 400; color: var(--muted); }
+.a-row { display: flex; justify-content: space-between; gap: 12px; padding: 9px 16px; border-bottom: 1px solid var(--border); }
+.a-row:last-child { border-bottom: 0; }
+.a-row .sub { color: var(--muted); font-size: 12px; }
+.a-bar { height: 4px; background: var(--surface-muted); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+.a-bar i { display: block; height: 100%; background: var(--primary); }
+.a-bar i.over { background: var(--bad); }
+.a-table { width: 100%; border-collapse: collapse; }
+.a-table th { text-align: left; font-weight: 500; color: var(--muted); font-size: 12px; padding: 8px 16px; border-bottom: 1px solid var(--border); }
+.a-table td { padding: 9px 16px; border-bottom: 1px solid var(--border); }
+.a-table tr:last-child td { border-bottom: 0; }
+.a-table .r { text-align: right; }
+.a-table .dim { color: var(--muted); }
+.a-form { border-left: 1px solid var(--border); background: var(--surface); padding: 24px; }
+.a-form h2 { font-size: 16px; margin: 0 0 20px; font-weight: 600; }
+.a-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.a-field label { font-size: 12px; font-weight: 500; color: var(--muted); }
+.a-field input, .a-field select { width: 100%; min-width: 0; border: 1px solid var(--border); background: var(--bg); border-radius: 6px; padding: 8px 10px; }
+.a-field .amt { font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.a-two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.a-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+@media (max-width: 1100px) { .a-shell, .a-shell.noform { grid-template-columns: 1fr; } .a-nav { flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--border); padding: 10px 16px; } .a-nav img { margin: 0 12px 0 0; } .a-main { padding: 20px 16px 120px; } .a-grid { grid-template-columns: 1fr; } .a-form { border-left: 0; border-top: 1px solid var(--border); } }
+
+/* ---------- Variant B: Receipt slips ---------- */
+body[data-variant="B"] {
+  --bg: light-dark(#e4e7e6, #000000);
+  --slip: light-dark(#ffffff, #121313);
+  --fg: light-dark(#121418, #ece8df);
+  --muted: light-dark(#666d70, #8f8b83);
+  --rule: light-dark(#c9cecd, #34322e);
+  --primary: light-dark(#13785a, #5fcb9f);
+  --on-primary: light-dark(#ffffff, #000000);
+  --good: light-dark(#13785a, #5fcb9f);
+  --bad: light-dark(#a8261b, #ff7a6e);
+  --ring: var(--primary);
+  --shadow: light-dark(0 1px 0 rgba(18,20,24,.06), 0 0 0 transparent);
+  font-family: "Archivo", system-ui, sans-serif; font-stretch: 100%;
+  font-size: 14px; line-height: 1.4;
+  background: var(--bg); color: var(--fg);
+}
+.b-top { display: flex; align-items: center; gap: 24px; padding: 14px 20px; max-width: 760px; margin: 0 auto; }
+.b-top img { height: 24px; }
+.b-top nav { display: flex; gap: 4px; overflow-x: auto; }
+.b-top nav a { padding: 6px 12px; border-radius: 999px; color: var(--muted); text-decoration: none; font-stretch: 87%; font-weight: 500; }
+.b-top nav a.on { background: var(--fg); color: var(--bg); }
+.b-wrap { max-width: 760px; margin: 0 auto; padding: 8px 20px 140px; display: flex; flex-direction: column; gap: 28px; }
+.b-slip { background: var(--slip); padding: 20px 22px 30px; position: relative; filter: drop-shadow(var(--shadow));
+  --z: 8px;
+  -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / calc(2 * var(--z)) 100%;
+          mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / calc(2 * var(--z)) 100%; }
+.b-slip h2 { font-stretch: 75%; font-weight: 700; font-size: 15px; letter-spacing: 0.02em; margin: 0 0 12px; display: flex; justify-content: space-between; }
+.b-slip h2 span { font-weight: 400; color: var(--muted); letter-spacing: 0; font-stretch: 100%; font-size: 13px; }
+.b-hero { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; }
+.b-hero .label { color: var(--muted); font-size: 13px; }
+.b-hero .big { font-stretch: 70%; font-weight: 700; font-size: 56px; line-height: 1; letter-spacing: -0.01em; }
+.b-hero .delta { font-size: 13px; margin-top: 6px; }
+.b-line { display: flex; align-items: baseline; gap: 8px; padding: 5px 0; }
+.b-line .lead { flex: 1; border-bottom: 1.5px dotted var(--rule); transform: translateY(-4px); min-width: 20px; }
+.b-line .what small { color: var(--muted); margin-left: 6px; }
+.b-line .amt { font-stretch: 87%; font-weight: 600; }
+.b-total { border-top: 1.5px solid var(--fg); margin-top: 8px; padding-top: 8px; font-weight: 700; }
+.b-date { color: var(--muted); font-size: 12px; font-stretch: 87%; padding: 10px 0 2px; }
+.b-budget { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 6px 0; }
+.b-ticks { grid-column: 1 / -1; display: flex; gap: 2px; }
+.b-ticks i { flex: 1; height: 8px; background: var(--rule); }
+.b-ticks i.on { background: var(--fg); }
+.b-ticks i.over { background: var(--bad); }
+.b-entry { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+.b-entry .full { grid-column: 1 / -1; }
+.b-entry label { display: block; font-size: 12px; color: var(--muted); font-stretch: 87%; padding-top: 10px; }
+.b-entry input, .b-entry select { width: 100%; min-width: 0; border: 0; border-bottom: 1.5px solid var(--rule); background: transparent; padding: 6px 0; border-radius: 0; }
+.b-entry input:focus, .b-entry select:focus { outline: none; border-bottom-color: var(--primary); }
+.b-entry .amt { font-stretch: 70%; font-weight: 700; font-size: 40px; font-variant-numeric: tabular-nums; }
+.b-actions { grid-column: 1 / -1; display: flex; gap: 8px; justify-content: flex-end; padding-top: 18px; }
+.b-btn { background: var(--primary); color: var(--on-primary); border: 0; border-radius: 999px; padding: 9px 18px; font-weight: 600; cursor: pointer; }
+.b-btn.ghost { background: transparent; color: var(--fg); box-shadow: inset 0 0 0 1.5px var(--rule); }
+@media (max-width: 600px) { .b-hero .big { font-size: 44px; } .b-top { gap: 12px; } }
+
+/* ---------- Variant C: Soft layers ---------- */
+body[data-variant="C"] {
+  --bg: light-dark(#eef2f0, #000000);
+  --surface: light-dark(#ffffff, #121514);
+  --raised: light-dark(#e3ede8, #1c211f);
+  --fg: light-dark(#10140f, #f1f4f2);
+  --muted: light-dark(#5f6b65, #8e9a94);
+  --border: light-dark(#dfe6e2, #232826);
+  --primary: light-dark(#13785a, #5fcb9f);
+  --primary-soft: light-dark(#d3ece1, #12352a);
+  --on-primary: light-dark(#ffffff, #002116);
+  --good: light-dark(#13785a, #5fcb9f);
+  --bad: light-dark(#c0362c, #ff8a7e);
+  --ring: var(--primary);
+  font-family: "Manrope", system-ui, sans-serif;
+  font-size: 15px; line-height: 1.5;
+  background: var(--bg); color: var(--fg);
+}
+.c-app { max-width: 1120px; margin: 0 auto; padding: 20px 20px 160px; }
+.c-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+.c-bar img { height: 28px; }
+.c-tabs { display: flex; gap: 4px; background: var(--surface); padding: 4px; border-radius: 999px; }
+.c-tabs a { padding: 8px 16px; border-radius: 999px; color: var(--muted); text-decoration: none; font-weight: 600; font-size: 14px; }
+.c-tabs a.on { background: var(--primary-soft); color: var(--fg); }
+.c-hero { background: var(--surface); border-radius: 28px; padding: 28px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; margin-bottom: 20px; }
+.c-hero .label { color: var(--muted); font-weight: 600; font-size: 14px; }
+.c-hero .big { font-size: 52px; font-weight: 800; letter-spacing: -0.035em; line-height: 1.05; margin: 6px 0 10px; }
+.c-hero .big .paise { font-size: 0.45em; font-weight: 700; color: var(--muted); letter-spacing: 0; }
+.c-chip { display: inline-block; background: var(--raised); border-radius: 999px; padding: 4px 12px; font-weight: 600; font-size: 13px; }
+.c-accts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.c-acct { background: var(--raised); border-radius: 18px; padding: 14px 16px; }
+.c-acct .n { font-size: 13px; color: var(--muted); font-weight: 600; }
+.c-acct .v { font-size: 18px; font-weight: 700; }
+.c-cols { display: grid; grid-template-columns: 1fr 1.4fr; gap: 20px; }
+.c-card { background: var(--surface); border-radius: 24px; padding: 22px; }
+.c-card h2 { font-size: 18px; font-weight: 800; margin: 0 0 14px; letter-spacing: -0.01em; }
+.c-bud { margin-bottom: 16px; }
+.c-bud .top { display: flex; justify-content: space-between; font-weight: 600; }
+.c-bud .left { font-size: 13px; color: var(--muted); }
+.c-track { height: 10px; border-radius: 999px; background: var(--raised); margin: 8px 0 4px; overflow: hidden; }
+.c-track i { display: block; height: 100%; border-radius: 999px; background: var(--primary); }
+.c-track i.over { background: var(--bad); }
+.c-day { font-size: 13px; font-weight: 700; color: var(--muted); margin: 14px 0 6px; }
+.c-tx { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+.c-av { width: 40px; height: 40px; border-radius: 14px; background: var(--raised); display: grid; place-items: center; font-weight: 800; font-size: 15px; flex: none; }
+.c-tx .mid { flex: 1; min-width: 0; }
+.c-tx .mid div:last-child { color: var(--muted); font-size: 13px; }
+.c-tx .amt { font-weight: 700; }
+.c-fab { position: fixed; right: 28px; bottom: 90px; background: var(--primary); color: var(--on-primary); border: 0; border-radius: 20px; padding: 16px 22px; font-weight: 800; box-shadow: 0 8px 24px light-dark(rgba(19,120,90,.28), rgba(0,0,0,.6)); cursor: pointer; }
+.c-scrim { position: fixed; inset: 0; background: light-dark(rgba(16,20,15,.25), rgba(0,0,0,.7)); }
+.c-sheet { position: fixed; left: 50%; bottom: 0; transform: translateX(-50%); width: min(560px, 100%); background: var(--surface); border-radius: 28px 28px 0 0; padding: 12px 24px 96px; box-shadow: 0 -12px 40px light-dark(rgba(0,0,0,.12), rgba(0,0,0,.8)); border-top: 1px solid var(--border); }
+.c-grab { width: 40px; height: 5px; border-radius: 999px; background: var(--raised); margin: 0 auto 16px; }
+.c-sheet h2 { font-size: 20px; font-weight: 800; margin: 0 0 12px; }
+.c-amt { text-align: center; font-size: 48px; font-weight: 800; letter-spacing: -0.03em; border: 0; background: transparent; width: 100%; font-variant-numeric: tabular-nums; padding: 8px 0 16px; }
+.c-amt:focus { outline: none; }
+.c-dir { display: grid; grid-template-columns: 1fr 1fr 1fr; background: var(--raised); border-radius: 14px; padding: 4px; margin-bottom: 14px; }
+.c-dir button { border: 0; background: transparent; padding: 8px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+.c-dir button.on { background: var(--surface); }
+.c-f { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.c-f label { display: flex; flex-direction: column; background: var(--raised); border-radius: 14px; padding: 8px 14px; font-size: 12px; color: var(--muted); font-weight: 600; }
+.c-f label.full { grid-column: 1 / -1; }
+.c-f input, .c-f select { width: 100%; min-width: 0; border: 0; background: transparent; padding: 2px 0; font-size: 15px; font-weight: 600; color: var(--fg); }
+.c-f input:focus, .c-f select:focus { outline: none; }
+.c-go { width: 100%; margin-top: 16px; background: var(--primary); color: var(--on-primary); border: 0; border-radius: 16px; padding: 14px; font-weight: 800; font-size: 16px; cursor: pointer; }
+@media (max-width: 860px) { .c-hero, .c-cols { grid-template-columns: 1fr; } .c-hero .big { font-size: 40px; } .c-tabs { display: none; } }
+
+/* ---------- Prototype switcher (not part of any design) ---------- */
+.proto { position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 100; display: flex; align-items: center; gap: 6px; padding: 6px; border-radius: 999px; background: #ff3d8b; color: #fff; font: 600 13px/1 system-ui, sans-serif; box-shadow: 0 6px 20px rgba(0,0,0,.35); white-space: nowrap; max-width: calc(100vw - 16px); overflow-x: auto; }
+.proto button { background: rgba(255,255,255,.18); color: #fff; border: 0; border-radius: 999px; padding: 7px 11px; cursor: pointer; font: inherit; }
+.proto button.on { background: #fff; color: #ff3d8b; }
+.proto .lbl { padding: 0 8px; min-width: 150px; text-align: center; }
+.proto .sep { width: 1px; align-self: stretch; background: rgba(255,255,255,.35); margin: 0 4px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="proto" id="proto"></div>
+<script>
+const VARIANTS = { A: "Quiet ledger", B: "Receipt slips", C: "Soft layers" };
+
+const params = new URLSearchParams(location.search);
+const state = {
+  variant: VARIANTS[params.get("variant")] ? params.get("variant") : "A",
+  theme: params.get("theme") || "system",
+  privacy: params.get("privacy") === "1",
+  numfmt: params.get("numfmt") === "intl" ? "intl" : "indian",
+  form: params.get("form") !== "0",
+};
+
+// Sample data. Signs are the change to that Account's Balance (ADR 0009).
+const accounts = [
+  { name: "HDFC Savings", kind: "asset", balance: 184320.5 },
+  { name: "SBI Salary", kind: "asset", balance: 62410 },
+  { name: "Cash", kind: "asset", balance: 3250 },
+  { name: "Mutual funds", kind: "asset", balance: 892140.22, note: "Market Value" },
+  { name: "Flat, Baner", kind: "asset", balance: 8500000, note: "valued 1 Oct" },
+  { name: "HDFC Regalia", kind: "liability", balance: 42816.4 },
+  { name: "Amazon Pay ICICI", kind: "liability", balance: -1240 },
+  { name: "Home loan", kind: "liability", balance: 3145000 },
+];
+const netWorth = accounts.reduce((s, a) => s + (a.kind === "asset" ? a.balance : -a.balance), 0);
+const netWorthChange = 38214.6;
+
+const budgets = [
+  { name: "Groceries", budget: 12000, spent: 8640 },
+  { name: "Eating out", budget: 5000, spent: 6120 },
+  { name: "Transport", budget: 4000, spent: 1450 },
+];
+
+// amount: change to `account`'s Balance; kind decides colour.
+const txns = [
+  { date: "16 Oct", party: "Swiggy", to: "Eating out", account: "HDFC Regalia", kind: "liability", amount: 420 },
+  { date: "15 Oct", party: "Acme Corp", to: "Salary", account: "SBI Salary", kind: "income", amount: 145000 },
+  { date: "15 Oct", party: null, to: "HDFC Regalia", account: "HDFC Regalia", kind: "liability", amount: -42000, transfer: "from SBI Salary" },
+  { date: "14 Oct", party: "BigBasket", to: "Groceries", account: "HDFC Savings", kind: "asset", amount: -2386.75 },
+  { date: "13 Oct", party: "Mr Kulkarni", to: "Rent", account: "HDFC Savings", kind: "asset", amount: -28000 },
+  { date: "12 Oct", party: "Uber", to: "Transport", account: "Amazon Pay ICICI", kind: "liability", amount: 312.4 },
+];
+
+function group(n, fmt) {
+  const [i, d] = Math.abs(n).toFixed(2).split(".");
+  let out;
+  if (fmt === "intl" || i.length <= 3) out = i.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  else out = i.slice(0, -3).replace(/\B(?=(\d{2})+(?!\d))/g, ",") + "," + i.slice(-3);
+  return { int: out, dec: d };
+}
+
+// The one place that owns sign, colour, "in credit" and Privacy Mode (ADR 0009).
+// role: "balance" (Asset Balance, Net Worth, Budget left: red when negative),
+//       "liability-balance" (never red; negative reads "in credit"),
+//       "change" (signed change on an Account of `kind`; green only for the good direction).
+function amount(n, { role = "balance", kind = "asset", signed = false, paise = true } = {}) {
+  if (state.privacy) return `<span class="num mask" aria-label="Amount hidden">${MASKS[state.variant]}</span>`;
+  const g = group(n, state.numfmt);
+  const dec = paise ? (state.variant === "C" ? `<span class="paise">.${g.dec}</span>` : `.${g.dec}`) : "";
+  let text = `₹${g.int}${dec}`;
+  let color = "";
+  if (role === "liability-balance") {
+    if (n < 0) text += " in credit";
+  } else if (role === "balance") {
+    if (n < 0) { text = "−" + text; color = "var(--bad)"; }
+  } else {
+    if (signed || n !== 0) text = (n > 0 ? "+" : "−") + text;
+    const good = (kind === "asset" && n > 0) || (kind === "liability" && n < 0) || kind === "income";
+    if (good) color = "var(--good)";
+  }
+  return `<span class="num"${color ? ` style="color:${color}"` : ""}>${text}</span>`;
+}
+const MASKS = { A: "₹ ••••••", B: "₹ ░░░░░░", C: "₹ ● ● ● ●" };
+const srDir = (t) => t.kind === "liability" ? `<span class="sr">${t.amount > 0 ? "Charged" : "Paid"}</span>` : "";
+const txAmt = (t) => srDir(t) + amount(t.amount, { role: "change", kind: t.kind });
+const txWho = (t) => t.party || "Transfer";
+const txWhat = (t) => t.transfer ? `${t.transfer} → ${t.to}` : `${t.to} · ${t.account}`;
+const logo = () => {
+  const dark = document.documentElement.dataset.resolved === "dark";
+  return `<img src="../brand/svg/ledgr-logo-on-${dark ? "dark" : "light"}.svg" alt="ledgr">`;
+};
+const NAV = ["Home", "Transactions", "Budgets", "Accounts", "Investments", "Goals"];
+
+function formFields() {
+  return {
+    date: `<input type="date" value="2026-10-16">`,
+    from: `<select><option>HDFC Savings</option><option>SBI Salary</option><option>HDFC Regalia</option><option>Cash</option></select>`,
+    to: `<select><option>Groceries</option><option>Eating out</option><option>Rent</option><option>Transport</option></select>`,
+    party: `<input value="BigBasket">`,
+    note: `<input placeholder="Optional">`,
+  };
+}
+
+// ---------- A ----------
+function renderA() {
+  const f = formFields();
+  const assets = accounts.filter((a) => a.kind === "asset");
+  const liabs = accounts.filter((a) => a.kind === "liability");
+  return `
+  <div class="a-shell ${state.form ? "" : "noform"}">
+    <nav class="a-nav">${logo()}${NAV.map((n, i) => `<a href="#" class="${i ? "" : "on"}">${n}</a>`).join("")}</nav>
+    <main class="a-main">
+      <div class="a-head">
+        <div><h1>Net Worth</h1><div class="a-nw">${amount(netWorth)}<small>${amount(netWorthChange, { role: "change", kind: "asset" })} this month</small></div></div>
+        <button class="a-btn" data-act="form">Add transaction</button>
+      </div>
+      <div class="a-grid">
+        <section class="a-panel"><h2>Assets <span>${amount(assets.reduce((s, a) => s + a.balance, 0))}</span></h2>
+          ${assets.map((a) => `<div class="a-row"><div>${a.name}${a.note ? `<div class="sub">${a.note}</div>` : ""}</div>${amount(a.balance)}</div>`).join("")}
+        </section>
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <section class="a-panel"><h2>Liabilities <span>owed</span></h2>
+            ${liabs.map((a) => `<div class="a-row"><div>${a.name}</div>${amount(a.balance, { role: "liability-balance" })}</div>`).join("")}
+          </section>
+          <section class="a-panel"><h2>Budgets <span>October</span></h2>
+            ${budgets.map((b) => `<div class="a-row" style="display:block"><div style="display:flex;justify-content:space-between"><span>${b.name}</span><span>${amount(b.budget - b.spent)} <span class="sub">left</span></span></div><div class="a-bar"><i class="${b.spent > b.budget ? "over" : ""}" style="width:${Math.min(100, (b.spent / b.budget) * 100)}%"></i></div></div>`).join("")}
+          </section>
+        </div>
+      </div>
+      <section class="a-panel"><h2>Recent transactions <span>View all</span></h2>
+        <table class="a-table"><thead><tr><th>Date</th><th>Party</th><th>Account</th><th class="r">Amount</th></tr></thead><tbody>
+        ${txns.map((t) => `<tr><td class="dim num">${t.date}</td><td>${txWho(t)}</td><td class="dim">${txWhat(t)}</td><td class="r">${txAmt(t)}</td></tr>`).join("")}
+        </tbody></table>
+      </section>
+    </main>
+    ${state.form ? `
+    <aside class="a-form">
+      <h2>Add transaction</h2>
+      <div class="a-field"><label>Amount</label><input class="amt" value="2,386.75"></div>
+      <div class="a-two"><div class="a-field"><label>From</label>${f.from}</div><div class="a-field"><label>To</label>${f.to}</div></div>
+      <div class="a-two"><div class="a-field"><label>Date</label>${f.date}</div><div class="a-field"><label>Party</label>${f.party}</div></div>
+      <div class="a-field"><label>Note</label>${f.note}</div>
+      <div class="a-actions"><button class="a-btn ghost" data-act="form">Cancel</button><button class="a-btn">Save transaction</button></div>
+    </aside>` : ""}
+  </div>`;
+}
+
+// ---------- B ----------
+function renderB() {
+  const f = formFields();
+  const days = [...new Set(txns.map((t) => t.date))];
+  const ticks = (b) => {
+    const n = 20, on = Math.round((Math.min(b.spent, b.budget) / b.budget) * n);
+    return Array.from({ length: n }, (_, i) => `<i class="${i < on ? (b.spent > b.budget ? "over" : "on") : ""}"></i>`).join("");
+  };
+  return `
+  <header class="b-top">${logo()}<nav>${NAV.map((n, i) => `<a href="#" class="${i ? "" : "on"}">${n}</a>`).join("")}</nav></header>
+  <div class="b-wrap">
+    <section class="b-slip">
+      <div class="b-hero">
+        <div><div class="label">Net Worth today</div><div class="big">${amount(netWorth)}</div><div class="delta">${amount(netWorthChange, { role: "change", kind: "asset" })} since 1 October</div></div>
+        <button class="b-btn" data-act="form">${state.form ? "Close entry" : "New transaction"}</button>
+      </div>
+    </section>
+    ${state.form ? `
+    <section class="b-slip"><h2>New transaction <span>16 Oct</span></h2>
+      <div class="b-entry">
+        <div class="full"><label>Amount</label><input class="amt" value="₹2,386.75"></div>
+        <div><label>From</label>${f.from}</div><div><label>To</label>${f.to}</div>
+        <div><label>Party</label>${f.party}</div><div><label>Date</label>${f.date}</div>
+        <div class="full"><label>Note</label>${f.note}</div>
+        <div class="b-actions"><button class="b-btn ghost" data-act="form">Discard</button><button class="b-btn">Save transaction</button></div>
+      </div>
+    </section>` : ""}
+    <section class="b-slip"><h2>What you have <span>8 Accounts</span></h2>
+      ${accounts.map((a) => `<div class="b-line"><span class="what">${a.name}${a.note ? `<small>${a.note}</small>` : ""}</span><span class="lead"></span><span class="amt">${a.kind === "asset" ? amount(a.balance) : amount(a.balance, { role: "liability-balance" })}</span></div>`).join("")}
+      <div class="b-line b-total"><span class="what">Net Worth</span><span class="lead" style="border:0"></span><span class="amt">${amount(netWorth)}</span></div>
+    </section>
+    <section class="b-slip"><h2>October budgets <span>16 days left</span></h2>
+      ${budgets.map((b) => `<div class="b-budget"><span>${b.name}</span><span>${amount(b.budget - b.spent)} left</span><div class="b-ticks">${ticks(b)}</div></div>`).join("")}
+    </section>
+    <section class="b-slip"><h2>Recent <span>View all</span></h2>
+      ${days.map((d) => `<div class="b-date">${d}</div>${txns.filter((t) => t.date === d).map((t) => `<div class="b-line"><span class="what">${txWho(t)}<small>${txWhat(t)}</small></span><span class="lead"></span><span class="amt">${txAmt(t)}</span></div>`).join("")}`).join("")}
+    </section>
+  </div>`;
+}
+
+// ---------- C ----------
+function renderC() {
+  const f = formFields();
+  const days = [...new Set(txns.map((t) => t.date))];
+  const cash = accounts.filter((a) => a.kind === "asset" && !a.note).reduce((s, a) => s + a.balance, 0);
+  const owed = accounts.filter((a) => a.kind === "liability").reduce((s, a) => s + a.balance, 0);
+  const spent = budgets.reduce((s, b) => s + b.spent, 0);
+  return `
+  <div class="c-app">
+    <div class="c-bar">${logo()}<nav class="c-tabs">${NAV.slice(0, 5).map((n, i) => `<a href="#" class="${i ? "" : "on"}">${n}</a>`).join("")}</nav></div>
+    <section class="c-hero">
+      <div><div class="label">Net Worth</div><div class="big">${amount(netWorth)}</div><span class="c-chip">${amount(netWorthChange, { role: "change", kind: "asset" })} this month</span></div>
+      <div class="c-accts">
+        <div class="c-acct"><div class="n">In the bank</div><div class="v">${amount(cash)}</div></div>
+        <div class="c-acct"><div class="n">Invested</div><div class="v">${amount(892140.22)}</div></div>
+        <div class="c-acct"><div class="n">Owed</div><div class="v">${amount(owed, { role: "liability-balance" })}</div></div>
+        <div class="c-acct"><div class="n">Spent in October</div><div class="v">${amount(spent)}</div></div>
+      </div>
+    </section>
+    <div class="c-cols">
+      <section class="c-card"><h2>Budgets</h2>
+        ${budgets.map((b) => `<div class="c-bud"><div class="top"><span>${b.name}</span>${amount(b.budget - b.spent)}</div><div class="c-track"><i class="${b.spent > b.budget ? "over" : ""}" style="width:${Math.min(100, (b.spent / b.budget) * 100)}%"></i></div><div class="left">${amount(b.spent)} of ${amount(b.budget, { paise: false })}</div></div>`).join("")}
+      </section>
+      <section class="c-card"><h2>Recent</h2>
+        ${days.map((d) => `<div class="c-day">${d}</div>${txns.filter((t) => t.date === d).map((t) => `<div class="c-tx"><div class="c-av">${txWho(t)[0]}</div><div class="mid"><div>${txWho(t)}</div><div>${txWhat(t)}</div></div><div class="amt">${txAmt(t)}</div></div>`).join("")}`).join("")}
+      </section>
+    </div>
+    ${state.form ? "" : `<button class="c-fab" data-act="form">+ Add</button>`}
+    ${state.form ? `
+    <div class="c-scrim" data-act="form"></div>
+    <section class="c-sheet" role="dialog" aria-label="Add transaction"><div class="c-grab"></div>
+      <h2>Add transaction</h2>
+      <div class="c-dir"><button class="on">Spent</button><button>Received</button><button>Moved</button></div>
+      <input class="c-amt" value="₹2,386.75" aria-label="Amount">
+      <div class="c-f">
+        <label>From${f.from}</label><label>To${f.to}</label>
+        <label>Party${f.party}</label><label>Date${f.date}</label>
+        <label class="full">Note${f.note}</label>
+      </div>
+      <button class="c-go">Save transaction</button>
+    </section>` : ""}
+  </div>`;
+}
+
+// ---------- shell ----------
+function resolveTheme() {
+  const root = document.documentElement;
+  if (state.theme === "system") delete root.dataset.theme; else root.dataset.theme = state.theme;
+  const dark = state.theme === "dark" || (state.theme === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+  root.dataset.resolved = dark ? "dark" : "light";
+}
+
+function sync() {
+  const p = new URLSearchParams();
+  p.set("variant", state.variant);
+  if (state.theme !== "system") p.set("theme", state.theme);
+  if (state.privacy) p.set("privacy", "1");
+  if (state.numfmt === "intl") p.set("numfmt", "intl");
+  if (!state.form) p.set("form", "0");
+  history.replaceState(null, "", "?" + p);
+}
+
+function render() {
+  resolveTheme();
+  document.body.dataset.variant = state.variant;
+  document.getElementById("app").innerHTML = { A: renderA, B: renderB, C: renderC }[state.variant]();
+  const themes = { system: "Auto", light: "Light", dark: "Dark" };
+  document.getElementById("proto").innerHTML = `
+    <button data-p="prev" aria-label="Previous variant">←</button>
+    <span class="lbl">${state.variant} (${VARIANTS[state.variant]})</span>
+    <button data-p="next" aria-label="Next variant">→</button>
+    <span class="sep"></span>
+    <button data-p="theme">${themes[state.theme]}</button>
+    <button data-p="privacy" class="${state.privacy ? "on" : ""}">Privacy</button>
+    <button data-p="numfmt">${state.numfmt === "indian" ? "12,34,567" : "1,234,567"}</button>`;
+  sync();
+}
+
+function cycle(step) {
+  const keys = Object.keys(VARIANTS);
+  state.variant = keys[(keys.indexOf(state.variant) + step + keys.length) % keys.length];
+  render();
+}
+
+document.addEventListener("click", (e) => {
+  const p = e.target.closest("[data-p]")?.dataset.p;
+  if (p === "prev") cycle(-1);
+  if (p === "next") cycle(1);
+  if (p === "theme") { state.theme = { system: "light", light: "dark", dark: "system" }[state.theme]; render(); }
+  if (p === "privacy") { state.privacy = !state.privacy; render(); }
+  if (p === "numfmt") { state.numfmt = state.numfmt === "indian" ? "intl" : "indian"; render(); }
+  if (e.target.closest("[data-act=form]")) { state.form = !state.form; render(); }
+  if (e.target.closest("a[href='#']")) e.preventDefault();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.target.closest("input, textarea, select, [contenteditable]")) return;
+  if (e.key === "ArrowLeft") cycle(-1);
+  if (e.key === "ArrowRight") cycle(1);
+});
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", render);
+render();
+</script>
+</body>
+</html>
