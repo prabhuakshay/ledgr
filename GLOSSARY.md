@@ -105,11 +105,11 @@ A Transaction the user expects to repeat, such as rent, salary or a phone bill, 
 _Avoid_: Recurring transaction, standing order, bill
 
 **Occurrence**:
-One dated instance of a Schedule. Every Occurrence is Upcoming, Drafted, Paid, Skipped or Missed.
+One dated instance of a Schedule. Every Occurrence is Upcoming, Paid, Skipped or Missed; an Upcoming one may already have a Draft waiting. The user can Skip an Upcoming Occurrence, even one not yet due, and Discarding its Draft skips it too.
 _Avoid_: Instance, installment, due
 
 **Paid**:
-An Occurrence whose Draft the user posted, or that a Transaction the user recorded themselves already covers. A recorded Transaction covers it when it moves every Split of the Schedule, is for the Schedule's Party if it has one, and falls within a few days of the due date, fewer for daily and weekly Schedules.
+An Occurrence whose Draft the user posted, that the user linked to a Transaction by hand, or that a Transaction the user recorded themselves already covers. An Occurrence the user unlinked is never matched again on its own. A recorded Transaction covers it when it moves every Split of the Schedule, is for the Schedule's Party if it has one, and falls within a few days of the due date, fewer for daily and weekly Schedules.
 _Avoid_: Done, settled, fulfilled
 
 **Missed**:
