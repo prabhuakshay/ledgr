@@ -26,6 +26,9 @@ a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 /* Navigation and tabs show hover with a background; only text links underline. */
 .unav a:hover, .B-nav a:hover, .E-nav a:hover, .M-tabs a:hover, .F-tabs a:hover, .mt a:hover, .btn:hover { text-decoration: none; }
+/* An underline across an icon and a gap looks broken, so links with an icon underline only their text. */
+a:has(svg):hover { text-decoration: none; }
+a:has(svg):hover > span { text-decoration: underline; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; border-radius: 6px; }
 svg.lucide { width: 16px; height: 16px; stroke-width: 1.75; flex: none; }
@@ -566,7 +569,7 @@ function renderA() {
         <section><h2>Net Worth</h2><div class="h-big" id="hero">${amount(netWorth)}</div><div>${delta()}</div>${chart(296, 48)}</section>
         <section><h2>Assets <span class="counter">${assets.length}</span></h2>${assets.map((a) => `<div class="li">${ic(a.icon)}<span class="n">${a.name}</span>${accAmt(a, { paise: false })}</div>`).join("")}</section>
         <section><h2>Liabilities <span class="counter">${liabilities.length}</span></h2>${liabilities.map((a) => `<div class="li">${ic(a.icon)}<span class="n">${a.name}</span>${accAmt(a, { paise: false })}</div>`).join("")}</section>
-        <section><a href="#">${ic("inbox")} 3 Drafts waiting for review</a></section>
+        <section><a href="#" style="display:inline-flex;gap:6px;align-items:center">${ic("inbox")}<span>3 Drafts waiting for review</span></a></section>
       </aside>
     </div>
   </main>${dialog()}`;
