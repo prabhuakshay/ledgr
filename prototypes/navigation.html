@@ -1,0 +1,528 @@
+<!doctype html>
+<!--
+  PROTOTYPE, throwaway. Answers "How is ledgr's navigation organised?" (issue #3).
+  Four information architectures on prototype G's look (issue #2), switchable with the pink strip (or ← →).
+  Every nav item is clickable: pages are stubs that say what they hold, so judge where things live, not page content.
+  Open names: "Imports" stands in for the uploaded bank file (#15) and "Reports" for whatever #19 decides.
+  Resize below 760px for the phone shell.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ledgr navigation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mona+Sans:wght@400..700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@0.453.0/dist/umd/lucide.min.js"></script>
+<style>
+:root { color-scheme: light dark; }
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
+* { box-sizing: border-box; min-width: 0; }
+html, body { margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+nav a:hover, .btn:hover, .pal a:hover { text-decoration: none; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; border-radius: 6px; }
+svg.lucide { width: 16px; height: 16px; stroke-width: 1.75; flex: none; }
+
+body {
+  --bg: light-dark(#ffffff, #000000);
+  --subtle: light-dark(#f6f8fa, #0d1117);
+  --muted-bg: light-dark(#eff2f5, #151b23);
+  --border: light-dark(#d1d9e0, #30363d);
+  --border-muted: light-dark(#e3e8ed, #21262d);
+  --fg: light-dark(#1f2328, #e6edf3);
+  --muted: light-dark(#59636e, #9198a1);
+  --accent: light-dark(#0969da, #4493f8);
+  --good: light-dark(#1a7f37, #3fb950);
+  --bad: light-dark(#d1242f, #f85149);
+  --attention: light-dark(#9a6700, #d29922);
+  --primary: light-dark(#1f883d, #238636);
+  --primary-hover: light-dark(#1c8139, #29903b);
+  --btn: light-dark(#f6f8fa, #212830);
+  --btn-hover: light-dark(#eff2f5, #262c36);
+  --brand-ink: light-dark(#121418, #ece8df);
+  --brand-green: light-dark(#13785a, #5fcb9f);
+  --shadow: light-dark(0 1px 0 rgba(31,35,40,.04), none);
+  --overlay-shadow: light-dark(0 8px 24px rgba(66,74,83,.2), 0 0 0 1px #30363d, 0 16px 32px rgba(0,0,0,.85));
+  --page: light-dark(#f2f4f7, #000000);
+  --card: light-dark(#ffffff, #0d1117);
+  font-family: "Mona Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  font-size: 14px; line-height: 1.5;
+  background: var(--bg); color: var(--fg);
+  -webkit-font-smoothing: antialiased;
+}
+.logo { height: 24px; width: auto; display: block; color: var(--brand-ink); flex: none; }
+.muted { color: var(--muted); }
+.num { white-space: nowrap; flex: none; }
+.num .dec { color: var(--muted); }
+.num .suf { color: var(--muted); margin-left: 4px; }
+.num.mask { color: var(--muted); letter-spacing: .1em; }
+
+.box { border: 1px solid var(--border); border-radius: 6px; background: var(--bg); }
+.box-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 16px; background: var(--subtle); border-bottom: 1px solid var(--border); border-radius: 6px 6px 0 0; }
+.box-h h2, .box-h h3 { margin: 0; font-size: 14px; font-weight: 600; }
+.box-r { display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-top: 1px solid var(--border-muted); }
+.box-h + .box-r { border-top: 0; }
+.box-r .main { flex: 1; }
+.box-r .s { color: var(--muted); font-size: 12px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--btn); color: var(--fg); font-weight: 500; white-space: nowrap; box-shadow: var(--shadow); flex: none; }
+.btn:hover { background: var(--btn-hover); }
+.btn.primary { background: var(--primary); border-color: rgba(31,35,40,.15); color: #fff; }
+.btn.primary:hover { background: var(--primary-hover); }
+.btn.split { border-radius: 6px 0 0 6px; }
+.btn.split + .btn { border-radius: 0 6px 6px 0; border-left-color: rgba(255,255,255,.25); padding: 0 6px; }
+.counter { display: inline-block; min-width: 20px; padding: 0 6px; border-radius: 999px; background: var(--muted-bg); font-size: 12px; font-weight: 500; line-height: 18px; text-align: center; color: var(--fg); }
+.counter.hot { background: var(--accent); color: #fff; }
+.oct { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--subtle); border: 1px solid var(--border); color: var(--muted); flex: none; }
+.input { width: 100%; height: 32px; padding: 0 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--fg); }
+.input:focus { outline: none; border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+kbd { font-family: inherit; font-size: 11px; line-height: 18px; border: 1px solid var(--border); border-radius: 4px; padding: 0 5px; color: var(--muted); background: var(--bg); }
+.skel { height: 8px; border-radius: 4px; background: var(--muted-bg); }
+
+/* ---------- desktop header ---------- */
+.hdr { position: sticky; top: 40px; z-index: 20; display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 24px; background: var(--subtle); border-bottom: 1px solid var(--border); }
+.hdr .crumb { font-weight: 600; display: flex; gap: 8px; align-items: center; white-space: nowrap; }
+.hdr .crumb .muted { font-weight: 400; }
+.hdr .sp { flex: 1; }
+.hdr .search { width: 280px; position: relative; }
+.hdr .search > svg { position: absolute; left: 8px; top: 8px; color: var(--muted); }
+.hdr .search .input { padding-left: 30px; }
+.hdr .search kbd { position: absolute; right: 8px; top: 6px; }
+.hdr .qa { flex: 1; max-width: 560px; position: relative; }
+.hdr .qa > svg { position: absolute; left: 10px; top: 8px; color: var(--brand-green); }
+.hdr .qa .input { padding-left: 34px; height: 32px; }
+.hdr .qa kbd { position: absolute; right: 8px; top: 6px; }
+.avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--muted-bg); border: 1px solid var(--border); display: grid; place-items: center; color: var(--muted); flex: none; }
+.menu { position: absolute; z-index: 50; right: 0; top: 38px; width: 240px; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--overlay-shadow); padding: 8px; }
+.menu a { display: flex; gap: 8px; align-items: center; padding: 6px 8px; border-radius: 6px; color: var(--fg); }
+.menu a:hover { background: var(--btn-hover); }
+.menu a kbd { margin-left: auto; }
+.menu hr { border: 0; border-top: 1px solid var(--border-muted); margin: 6px 0; }
+.rel { position: relative; display: flex; }
+
+/* ---------- desktop shell: sidebar + main ---------- */
+.shell { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 32px; max-width: 1360px; margin: 0 auto; padding: 24px; }
+.side { position: sticky; top: 128px; align-self: start; max-height: calc(100vh - 152px); overflow-y: auto; }
+.side h4 { font-size: 12px; font-weight: 600; color: var(--muted); margin: 16px 8px 4px; display: flex; justify-content: space-between; }
+.side h4:first-child { margin-top: 0; }
+.side a { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 6px; color: var(--fg); position: relative; }
+.side a:hover { background: var(--btn-hover); }
+.side a.on { background: var(--muted-bg); font-weight: 600; }
+.side a.on::before { content: ""; position: absolute; left: -8px; top: 6px; bottom: 6px; width: 4px; border-radius: 6px; background: var(--accent); }
+.side a svg { color: var(--muted); }
+.side a .counter, .side a .num { margin-left: auto; }
+.side a .num { font-size: 12px; font-weight: 400; color: var(--muted); }
+.side .sub a { padding-left: 32px; font-size: 13px; }
+.side .foot { border-top: 1px solid var(--border-muted); margin-top: 12px; padding-top: 8px; display: flex; flex-wrap: wrap; gap: 0 4px; }
+.side .foot a { font-size: 12px; color: var(--muted); padding: 4px 8px; }
+.side details summary { list-style: none; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--muted); margin: 16px 8px 4px; display: flex; gap: 4px; align-items: center; }
+.side details summary::-webkit-details-marker { display: none; }
+.side details[open] summary svg { transform: rotate(90deg); }
+.cnav { display: none; isolation: isolate; gap: 8px; padding: 0 24px; border-bottom: 1px solid var(--border); background: var(--subtle); overflow-x: auto; scrollbar-width: none; position: sticky; top: 104px; z-index: 19; }
+.utabs { display: flex; gap: 8px; border-bottom: 1px solid var(--border); margin-bottom: 16px; overflow-x: auto; scrollbar-width: none; isolation: isolate; }
+.cnav a, .utabs a { flex: none; display: flex; align-items: center; gap: 8px; padding: 0 8px; height: 48px; color: var(--fg); white-space: nowrap; border-bottom: 2px solid transparent; position: relative; }
+.utabs a { height: 40px; }
+.cnav a:hover::before, .utabs a:hover::before { content: ""; position: absolute; inset: 6px 0; background: var(--btn-hover); border-radius: 6px; z-index: -1; }
+.cnav a.on, .utabs a.on { font-weight: 600; border-bottom-color: #fd8c73; }
+.cnav a svg, .utabs a svg { color: var(--muted); }
+@media (max-width: 1000px) {
+  .shell { grid-template-columns: 1fr; padding-top: 16px; }
+  .side { display: none; }
+  .cnav { display: flex; }
+  .hdr .search { width: 200px; }
+}
+
+.ph { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 12px; margin-bottom: 16px; border-bottom: 1px solid var(--border-muted); }
+.ph h1 { margin: 0; font-size: 24px; font-weight: 400; }
+.ph h1 .muted { margin-left: 8px; font-size: 14px; }
+.utabs + .ph, .ph.flat { border-bottom: 0; padding-bottom: 0; }
+.holds { padding: 12px 16px; }
+.holds ul { margin: 0; padding-left: 20px; }
+.holds li { margin: 2px 0; }
+.note { margin-top: 12px; padding: 8px 12px; border-radius: 6px; border: 1px solid color-mix(in srgb, var(--attention) 40%, transparent); background: color-mix(in srgb, var(--attention) 8%, transparent); font-size: 13px; }
+.rows { margin-top: 16px; }
+.rows .box-r { padding: 14px 16px; }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 24px; }
+.grid2 .box + .box { margin-top: 16px; }
+@media (max-width: 1000px) { .grid2 { grid-template-columns: 1fr; } }
+
+/* ---------- command palette ---------- */
+.scrim { position: fixed; inset: 0; z-index: 60; background: light-dark(rgba(31,35,40,.5), rgba(1,4,9,.8)); }
+.pal { position: fixed; z-index: 61; top: 96px; left: 50%; transform: translateX(-50%); width: min(600px, calc(100% - 32px)); background: var(--bg); border-radius: 12px; box-shadow: var(--overlay-shadow); overflow: hidden; }
+.pal .pi { display: flex; align-items: center; gap: 8px; padding: 0 16px; border-bottom: 1px solid var(--border-muted); }
+.pal .pi input { flex: 1; height: 52px; border: 0; background: transparent; font-size: 16px; }
+.pal .pi input:focus { outline: none; }
+.pal .pl { max-height: 380px; overflow-y: auto; padding: 8px; }
+.pal h5 { margin: 8px 8px 4px; font-size: 12px; color: var(--muted); font-weight: 600; }
+.pal a { display: flex; gap: 10px; align-items: center; padding: 8px; border-radius: 6px; color: var(--fg); }
+.pal a:hover, .pal a.hi { background: var(--muted-bg); }
+.pal a svg { color: var(--muted); }
+.pal a .muted { margin-left: auto; font-size: 12px; }
+.pal .pf { display: flex; gap: 16px; padding: 8px 16px; border-top: 1px solid var(--border-muted); font-size: 12px; color: var(--muted); }
+
+/* ---------- phone shell ---------- */
+.mob, .mtabs { display: none; }
+@media (max-width: 760px) {
+  body { background: var(--page); padding-bottom: calc(76px + env(safe-area-inset-bottom)); -webkit-tap-highlight-color: transparent; }
+  .desk { display: none; }
+  .mob { display: block; }
+  .mtabs { display: grid; }
+  .pal { top: 56px; }
+}
+.mbar { position: sticky; top: 40px; z-index: 20; display: flex; align-items: center; justify-content: space-between; height: 52px; padding: 0 16px; background: var(--page); }
+.mbar .r { display: flex; gap: 6px; }
+.mbar .back { display: flex; align-items: center; gap: 2px; font-size: 16px; color: var(--accent); border: 0; background: none; padding: 0; }
+.mib { position: relative; width: 40px; height: 40px; border-radius: 50%; border: 0; background: var(--card); display: grid; place-items: center; color: var(--fg); }
+.mib b { position: absolute; top: 2px; right: 2px; min-width: 16px; height: 16px; border-radius: 8px; background: var(--primary); color: #fff; font-size: 10px; line-height: 16px; text-align: center; padding: 0 4px; }
+.mtitle { padding: 2px 20px 14px; }
+.mtitle h1 { margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+.mtitle div { color: var(--muted); margin-top: 2px; }
+.mseg { display: flex; gap: 6px; padding: 0 16px 12px; overflow-x: auto; scrollbar-width: none; }
+.mseg a { flex: none; height: 32px; padding: 0 14px; border-radius: 16px; background: var(--card); color: var(--fg); display: flex; align-items: center; gap: 6px; font-weight: 500; border: 1px solid light-dark(var(--border-muted), var(--border-muted)); }
+.mseg a.on { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.mseg a .counter { background: color-mix(in srgb, currentColor 18%, transparent); color: inherit; }
+.msec { display: flex; justify-content: space-between; padding: 20px 20px 8px; font-size: 13px; font-weight: 600; color: var(--muted); }
+.mcard { margin: 0 16px; background: var(--card); border-radius: 14px; border: 1px solid light-dark(transparent, var(--border-muted)); overflow: hidden; box-shadow: light-dark(0 1px 2px rgba(31,35,40,.06), none); }
+.mrow { display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 8px 16px; position: relative; color: var(--fg); }
+.mrow + .mrow::before { content: ""; position: absolute; top: 0; right: 0; left: 60px; border-top: 1px solid var(--border-muted); }
+.mrow:active { background: var(--subtle); }
+.mrow .ic { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; color: #fff; background: var(--hue, #59636e); flex: none; }
+.mrow .main { flex: 1; }
+.mrow .main .t { font-size: 15px; font-weight: 500; }
+.mrow .main .s { color: var(--muted); font-size: 13px; }
+.mrow > svg:last-child { color: var(--muted); opacity: .6; }
+.mrow .counter { margin-left: auto; }
+.mholds { padding: 12px 16px; font-size: 14px; }
+.mholds ul { margin: 0; padding-left: 18px; }
+.mtabs { position: fixed; z-index: 30; left: 0; right: 0; bottom: 0; grid-template-columns: repeat(5, 1fr); align-items: end; padding: 6px 4px calc(8px + env(safe-area-inset-bottom)); background: var(--card); border-top: 1px solid var(--border); }
+.mtabs a, .mtabs button { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px; min-height: 48px; justify-content: center; font-size: 11px; font-weight: 500; color: var(--muted); border: 0; background: none; }
+.mtabs a.on { color: var(--fg); font-weight: 600; }
+.mtabs a svg { width: 22px; height: 22px; }
+.mtabs a b { position: absolute; top: 0; left: calc(50% + 6px); min-width: 16px; height: 16px; border-radius: 8px; background: var(--primary); color: #fff; font-size: 10px; line-height: 16px; padding: 0 4px; }
+.mtabs .plus span { width: 52px; height: 52px; border-radius: 50%; background: var(--primary); color: #fff; display: grid; place-items: center; margin-top: -18px; box-shadow: 0 4px 12px light-dark(rgba(31,136,61,.35), rgba(0,0,0,.6)); }
+.mtabs .plus svg { width: 24px; height: 24px; }
+.msheet { position: fixed; z-index: 61; left: 0; right: 0; bottom: 0; background: var(--page); border-radius: 14px 14px 0 0; box-shadow: var(--overlay-shadow); padding: 0 0 calc(16px + env(safe-area-inset-bottom)); }
+.msheet .grab { width: 36px; height: 5px; border-radius: 3px; background: var(--border); margin: 6px auto 8px; }
+.msheet h3 { margin: 4px 20px 12px; font-size: 17px; }
+.msheet .compose { margin: 0 16px; background: var(--card); border-radius: 14px; padding: 12px 16px; }
+.msheet .compose textarea { width: 100%; border: 0; background: transparent; font-size: 17px; resize: none; height: 72px; }
+.msheet .compose textarea:focus { outline: none; }
+.msheet .compose .bar { display: flex; justify-content: space-between; align-items: center; }
+.msheet .alt { display: flex; justify-content: center; gap: 24px; padding: 14px 0 4px; }
+
+/* ---------- prototype switcher (not part of any design) ---------- */
+body { padding-top: 40px; }
+.proto { position: fixed; top: 0; left: 0; right: 0; z-index: 100; height: 40px; display: flex; align-items: center; justify-content: safe center; gap: 6px; padding: 0 8px; background: #ff3d8b; color: #fff; font: 600 13px/1 system-ui, sans-serif; white-space: nowrap; overflow-x: auto; }
+.proto button, .proto select { background: rgba(255,255,255,.2); color: #fff; border: 0; border-radius: 6px; height: 28px; padding: 0 10px; font: inherit; flex: none; }
+.proto select option { color: #000; }
+.proto .sep { width: 1px; height: 20px; background: rgba(255,255,255,.4); margin: 0 4px; flex: none; }
+.proto .st { font-weight: 400; opacity: .9; }
+@media (max-width: 500px) { .proto .st, .proto .st + .sep { display: none; } }
+</style>
+</head>
+<body>
+<div class="proto" id="proto"></div>
+<div id="app"></div>
+<script>
+const LOGO = `<svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 18.00 194.40 67.30" role="img" aria-label="ledgr"><title>ledgr</title><g transform="translate(-17.6 10) scale(.8)"><path fill="currentColor" fill-rule="evenodd" d="M22 18A8 8 0 0 1 30 10H70A8 8 0 0 1 78 18V90L71 84L64 90L57 84L50 90L43 84L36 90L29 84L22 90ZM36 25H64A3 3 0 0 1 67 28V28A3 3 0 0 1 64 31H36A3 3 0 0 1 33 28V28A3 3 0 0 1 36 25ZM36 38H54A3 3 0 0 1 57 41V41A3 3 0 0 1 54 44H36A3 3 0 0 1 33 41V41A3 3 0 0 1 36 38Z"/><path fill="var(--brand-green)" d="M37 57H63A4 4 0 0 1 67 61V61A4 4 0 0 1 63 65H37A4 4 0 0 1 33 61V61A4 4 0 0 1 37 57Z"/></g><g transform="translate(54.0 70)"><path fill="currentColor" d="M4.80 0.00L4.80 -44.10L12.96 -44.10L12.96 0.00L4.80 0.00Z"/><path fill="currentColor" d="M34.02 0.90Q29.04 0.90 25.24 -1.24Q21.45 -3.39 19.30 -7.15Q17.16 -10.92 17.16 -15.78Q17.16 -21.09 19.26 -25.02Q21.36 -28.95 25.05 -31.12Q28.74 -33.30 33.54 -33.30Q38.64 -33.30 42.21 -30.90Q45.78 -28.50 47.49 -24.15Q49.20 -19.80 48.69 -13.92L40.62 -13.92L40.62 -16.92Q40.62 -21.87 39.05 -24.04Q37.47 -26.22 33.90 -26.22Q29.73 -26.22 27.77 -23.68Q25.80 -21.15 25.80 -16.20Q25.80 -11.67 27.77 -9.20Q29.73 -6.72 33.54 -6.72Q35.94 -6.72 37.65 -7.77Q39.36 -8.82 40.26 -10.80L48.42 -8.46Q46.59 -4.02 42.64 -1.56Q38.70 0.90 34.02 0.90ZM23.28 -13.92L23.28 -19.98L44.76 -19.98L44.76 -13.92L23.28 -13.92Z"/><path fill="currentColor" d="M65.58 0.90Q61.11 0.90 57.75 -1.35Q54.39 -3.60 52.52 -7.47Q50.64 -11.34 50.64 -16.20Q50.64 -21.15 52.54 -25.00Q54.45 -28.86 57.90 -31.08Q61.35 -33.30 66.00 -33.30Q70.62 -33.30 73.77 -31.05Q76.92 -28.80 78.54 -24.93Q80.16 -21.06 80.16 -16.20Q80.16 -11.34 78.52 -7.47Q76.89 -3.60 73.65 -1.35Q70.41 0.90 65.58 0.90ZM66.90 -6.36Q69.63 -6.36 71.27 -7.59Q72.90 -8.82 73.62 -11.04Q74.34 -13.26 74.34 -16.20Q74.34 -19.14 73.62 -21.36Q72.90 -23.58 71.33 -24.81Q69.75 -26.04 67.20 -26.04Q64.47 -26.04 62.71 -24.70Q60.96 -23.37 60.12 -21.13Q59.28 -18.90 59.28 -16.20Q59.28 -13.47 60.09 -11.23Q60.90 -9.00 62.58 -7.68Q64.26 -6.36 66.90 -6.36ZM74.34 0.00L74.34 -22.20L73.32 -22.20L73.32 -43.20L81.54 -43.20L81.54 0.00L74.34 0.00Z"/><path fill="var(--brand-green)" d="M100.80 15.30Q98.04 15.30 95.55 14.41Q93.06 13.53 91.09 11.96Q89.13 10.38 87.90 8.28L95.46 4.62Q96.24 6.06 97.69 6.81Q99.15 7.56 100.86 7.56Q102.69 7.56 104.31 6.94Q105.93 6.33 106.91 5.12Q107.88 3.90 107.82 2.10L107.82 -7.32L108.84 -7.32L108.84 -32.40L115.98 -32.40L115.98 2.22Q115.98 3.42 115.88 4.48Q115.77 5.55 115.50 6.60Q114.72 9.57 112.60 11.49Q110.49 13.41 107.43 14.35Q104.37 15.30 100.80 15.30ZM100.08 0.90Q95.61 0.90 92.25 -1.35Q88.89 -3.60 87.02 -7.47Q85.14 -11.34 85.14 -16.20Q85.14 -21.15 87.05 -25.00Q88.95 -28.86 92.40 -31.08Q95.85 -33.30 100.50 -33.30Q105.12 -33.30 108.27 -31.05Q111.42 -28.80 113.04 -24.93Q114.66 -21.06 114.66 -16.20Q114.66 -11.34 113.02 -7.47Q111.39 -3.60 108.15 -1.35Q104.91 0.90 100.08 0.90ZM101.40 -6.36Q104.13 -6.36 105.77 -7.59Q107.40 -8.82 108.12 -11.04Q108.84 -13.26 108.84 -16.20Q108.84 -19.14 108.12 -21.36Q107.40 -23.58 105.83 -24.81Q104.25 -26.04 101.70 -26.04Q98.97 -26.04 97.22 -24.70Q95.46 -23.37 94.62 -21.13Q93.78 -18.90 93.78 -16.20Q93.78 -13.47 94.59 -11.23Q95.40 -9.00 97.08 -7.68Q98.76 -6.36 101.40 -6.36Z"/><path fill="currentColor" d="M121.38 0.00L121.38 -32.40L128.58 -32.40L128.58 -24.48L127.80 -25.50Q128.43 -27.18 129.48 -28.56Q130.53 -29.94 132.06 -30.84Q133.23 -31.56 134.61 -31.96Q135.99 -32.37 137.46 -32.48Q138.93 -32.58 140.40 -32.40L140.40 -24.78Q139.05 -25.20 137.26 -25.06Q135.48 -24.93 134.04 -24.24Q132.60 -23.58 131.61 -22.48Q130.62 -21.39 130.11 -19.90Q129.60 -18.42 129.60 -16.56L129.60 0.00L121.38 0.00Z"/></g></svg>`;
+const VARIANTS = {
+  A: "Grouped sidebar",
+  B: "Five hubs with tabs",
+  C: "Inbox and command bar",
+  D: "Accounts as the spine",
+};
+const params = new URLSearchParams(location.search);
+const state = {
+  variant: VARIANTS[params.get("variant")] ? params.get("variant") : "A",
+  page: params.get("page") || "home",
+  theme: params.get("theme") || "system",
+  overlay: null, // "palette" | "new" | "add" | "avatar"
+  q: "",
+};
+
+// Every page ledgr v1 has. `holds` is what the page shows, so the IA can be judged without real content.
+const PAGES = {
+  home: { t: "Home", i: "house", holds: ["Net Worth, spent and received this month", "Needs attention: Drafts, bills due, Budgets over, Missed Occurrences", "Recent activity", "Accounts and Budgets at a glance"] },
+  transactions: { t: "Transactions", i: "arrow-left-right", c: 248, holds: ["Every posted Transaction, filterable by Account, Party, Tag and date", "Each opens with its Splits, Attachments and History"] },
+  drafts: { t: "Drafts", i: "inbox", c: 3, hot: true, holds: ["Quick Adds still Processing, Drafts waiting to post, Failed ones to retry", "Drafts proposed by Schedules, Statements, Card EMIs and Investment Imports", "Post all ready Drafts"] },
+  imports: { t: "Imports", i: "file-up", holds: ["Bank and card files uploaded, and the rows each one turned into", "Rules that classify rows"], note: "Placeholder name: decided in \"What is an uploaded bank file called, and what is a rule?\"" },
+  budgets: { t: "Budgets", i: "pie-chart", holds: ["This month's Budget per Expense Account: Budget, Spent, Expected, left", "Unbudgeted spending", "Edit amounts inline"] },
+  schedules: { t: "Schedules", i: "repeat", c: 14, holds: ["Every Schedule with its next Occurrence", "Upcoming, Missed and Skipped Occurrences"] },
+  subscriptions: { t: "Subscriptions", i: "badge-indian-rupee", c: 6, holds: ["Schedules marked as Subscriptions, with trial ends and monthly cost", "How to cancel each one"] },
+  suggested: { t: "Suggested Schedules", i: "sparkles", c: 2, hot: true, holds: ["Repeats ledgr noticed, to confirm or dismiss"] },
+  forecast: { t: "Forecast", i: "trending-up", holds: ["Expected Balance of each Account for the next 30 days", "Low-Balance Threshold warnings"] },
+  goals: { t: "Goals", i: "target", holds: ["Each Goal with its Allocations and Projection"] },
+  accounts: { t: "Accounts", i: "landmark", c: 8, holds: ["Asset, Liability, Income and Expense Accounts", "Valued assets (house, car, FD) with their value history", "Opening Balance, Reconciliations, Low-Balance Threshold per Account"] },
+  investments: { t: "Investments", i: "chart-candlestick", holds: ["Holdings with Market Value, gains and price status", "Buy, Sell and Dividend events", "Investment Imports"] },
+  prices: { t: "Price Fetches", i: "refresh-cw", holds: ["Each AMFI / NSE fetch, what it returned and whether it failed"] },
+  reports: { t: "Reports", i: "chart-column", holds: ["Spending by Expense Account over time", "Net Worth history", "Income vs spending"], note: "Contents decided in \"Which reports does ledgr need beyond the dashboard?\"" },
+  parties: { t: "Parties", i: "users", holds: ["Every Party, with merge, hide and edit"] },
+  tags: { t: "Tags", i: "tag", holds: ["Every Tag, with merge, hide and the Transactions carrying it"] },
+  settings: { t: "Settings", i: "settings", holds: ["Number Format, Privacy Mode, theme", "Password", "Notifications: email digest and web push", "Storage used", "Full export"] },
+  inbox: { t: "Inbox", i: "inbox", c: 5, hot: true, holds: ["Everything waiting on the user, in one list:", "Drafts and Failed Quick Adds", "Suggested Schedules to confirm", "Missed Occurrences and Statements due", "Reconciliations that no longer match"] },
+  account: { t: "HDFC Savings", i: "landmark", holds: ["Ledger with running Balance", "Reconciliations", "Forecast for this Account"] },
+};
+const ACCTS = [
+  ["Assets", [["HDFC Savings", "landmark", "1,84,320"], ["SBI Salary", "landmark", "62,410"], ["Cash", "wallet", "3,250"], ["Flat, Baner", "home", "85,00,000"]]],
+  ["Investments", [["Mutual funds", "chart-candlestick", "8,92,140"], ["Zerodha", "chart-candlestick", "2,14,600"]]],
+  ["Liabilities", [["HDFC Regalia", "credit-card", "42,816"], ["Home loan", "key-round", "31,45,000"]]],
+];
+
+// Each variant answers the IA question differently.
+//   side:   desktop sidebar groups, [heading, [page keys]]
+//   hub:    which page lights up in the nav for a page that has no item of its own
+//   tabs:   sub-pages shown as underline tabs (desktop) / chips (phone) on a hub
+//   mob:    the four bottom tabs around the raised add button
+const IA = {
+  A: {
+    side: [["Overview", ["home", "transactions", "drafts"]], ["Plan", ["budgets", "schedules", "forecast", "goals"]], ["Money", ["accounts", "investments", "reports"]], ["Manage", ["imports", "parties", "tags", "settings"]]],
+    tabs: { schedules: ["schedules", "subscriptions", "suggested"], investments: ["investments", "prices"] },
+    mob: ["home", "transactions", "budgets", "more"],
+    mobLabel: { transactions: "Activity" },
+    palette: true,
+    add: "menu",
+  },
+  B: {
+    side: [[null, ["home", "activity", "plan", "wealth"]]],
+    foot: ["settings"],
+    hubs: {
+      activity: { t: "Activity", i: "arrow-left-right", tabs: ["transactions", "drafts", "imports"] },
+      plan: { t: "Plan", i: "calendar-range", tabs: ["budgets", "schedules", "subscriptions", "forecast", "goals"] },
+      wealth: { t: "Wealth", i: "landmark", tabs: ["accounts", "investments", "reports"] },
+      settings: { t: "Settings", i: "settings", tabs: ["settings", "parties", "tags", "prices"] },
+    },
+    mob: ["home", "activity", "plan", "wealth"],
+    palette: false,
+    add: "menu",
+  },
+  C: {
+    side: [[null, ["home", "inbox", "transactions", "accounts", "budgets"]]],
+    more: ["schedules", "subscriptions", "forecast", "goals", "investments", "prices", "reports", "imports", "parties", "tags", "settings"],
+    mob: ["home", "inbox", "accounts", "more"],
+    palette: true,
+    add: "compose",
+  },
+  D: {
+    side: [[null, ["home", "transactions", "drafts", "budgets", "schedules", "goals", "reports"]]],
+    accounts: true,
+    foot: ["imports", "parties", "tags", "prices", "settings"],
+    tabs: { schedules: ["schedules", "subscriptions", "suggested"] },
+    mob: ["home", "transactions", "accounts", "more"],
+    mobLabel: { transactions: "Activity" },
+    palette: false,
+    add: "menu",
+  },
+};
+
+const ic = (n) => `<i data-lucide="${n}"></i>`;
+const ia = () => IA[state.variant];
+const meta = (k) => ia().hubs?.[k] || PAGES[k] || { t: "More", i: "menu" };
+const counter = (p) => p.c ? `<span class="counter ${p.hot ? "hot" : ""}">${p.c}</span>` : "";
+const link = (k, on) => `<a href="#" data-go="${k}" class="${on ? "on" : ""}">${ic(meta(k).i)}<span>${meta(k).t}</span>${counter(meta(k))}</a>`;
+
+// Which hub a page belongs to, and its sibling tabs.
+function place(page) {
+  const v = ia();
+  if (v.hubs) {
+    for (const [h, m] of Object.entries(v.hubs)) if (m.tabs.includes(page)) return { hub: h, tabs: m.tabs };
+    return { hub: page, tabs: null };
+  }
+  if (page === "account") return { hub: "acct:HDFC Savings", tabs: ["ledger", "reconciliations", "acct-forecast"] };
+  for (const [h, t] of Object.entries(v.tabs || {})) if (t.includes(page)) return { hub: h, tabs: t };
+  return { hub: page, tabs: null };
+}
+const TAB_T = { ledger: "Ledger", reconciliations: "Reconciliations", "acct-forecast": "Forecast" };
+const tabName = (k) => TAB_T[k] || PAGES[k].t;
+
+function sidebar() {
+  const v = ia(), { hub } = place(state.page);
+  let h = v.side.map(([g, keys]) => `${g ? `<h4>${g}</h4>` : ""}${keys.map((k) => link(k, hub === k)).join("")}`).join("");
+  if (v.more) h += `<details open><summary>${ic("chevron-right")}More</summary>${v.more.map((k) => link(k, hub === k)).join("")}</details>`;
+  if (v.accounts) h += ACCTS.map(([g, list]) => `<h4><span>${g}</span><a href="#" data-go="accounts" style="padding:0;font-weight:400" aria-label="Manage ${g}">${ic("plus")}</a></h4>${list.map(([n, i, b]) => `<a href="#" data-go="account" class="${hub === "acct:" + n ? "on" : ""}">${ic(i)}<span>${n}</span><span class="num">₹${b}</span></a>`).join("")}`).join("");
+  if (v.foot) h += `<div class="foot">${v.foot.map((k) => `<a href="#" data-go="${k}">${meta(k).t}</a>`).join("")}</div>`;
+  return `<nav class="side" aria-label="Main">${h}</nav>`;
+}
+function compactNav() {
+  const v = ia(), { hub } = place(state.page);
+  const keys = v.side.flatMap(([, k]) => k).concat(v.accounts ? ["accounts"] : [], v.more ? ["more"] : [], v.hubs ? ["settings"] : []);
+  return `<nav class="cnav" aria-label="Main">${keys.map((k) => link(k, hub === k || (k === "accounts" && hub.startsWith("acct:")))).join("")}</nav>`;
+}
+
+function addButton() {
+  const v = ia();
+  if (v.add === "compose") return "";
+  return `<span class="rel"><button class="btn primary split" data-act="tx">${ic("plus")}New transaction</button><button class="btn primary" data-ov="new" aria-label="More ways to add">${ic("chevron-down")}</button>
+    ${state.overlay === "new" ? `<div class="menu"><a href="#" data-act="tx">${ic("plus")}New transaction<kbd>N</kbd></a><a href="#" data-ov="add">${ic("sparkles")}Quick Add<kbd>Q</kbd></a><a href="#" data-go="imports">${ic("file-up")}Import a bank file</a><hr><a href="#" data-go="drafts">${ic("inbox")}Go to Drafts</a></div>` : ""}</span>`;
+}
+function header() {
+  const v = ia(), p = meta(place(state.page).hub.startsWith("acct:") ? "accounts" : place(state.page).hub);
+  const search = v.palette
+    ? `<button class="search input" data-ov="palette" style="text-align:left;color:var(--muted);padding-left:30px;position:relative">${ic("search")}Search or jump to…<kbd>Ctrl K</kbd></button>`
+    : `<label class="search"><span class="sr">Search</span>${ic("search")}<input class="input" placeholder="Search Transactions"><kbd>/</kbd></label>`;
+  const qa = v.add === "compose" ? `<label class="qa"><span class="sr">Quick Add</span>${ic("sparkles")}<input class="input" placeholder="lunch at Toit 850 on hdfc card" data-qa><kbd>Q</kbd></label><span class="sp" style="flex:0 0 0"></span>` : "";
+  return `<header class="hdr">${LOGO}<span class="crumb"><span class="muted">/</span>${p.t}</span>${qa || `<span class="sp"></span>`}
+    ${v.add === "compose" ? `<span class="sp"></span>` : ""}${search}${addButton()}
+    <span class="rel"><button class="avatar" data-ov="avatar" aria-label="Account menu">${ic("user")}</button>
+    ${state.overlay === "avatar" ? `<div class="menu"><a href="#" data-go="settings">${ic("settings")}Settings</a><a href="#">${ic("eye-off")}Privacy Mode</a><a href="#">${ic("download")}Export everything</a><hr><a href="#">${ic("log-out")}Sign out</a></div>` : ""}</span></header>`;
+}
+
+function holds(p) {
+  return `<div class="box"><div class="box-h"><h3>What this page holds</h3></div><div class="holds"><ul>${p.holds.map((x) => `<li>${x}</li>`).join("")}</ul>${p.note ? `<div class="note">${p.note}</div>` : ""}</div></div>
+  <div class="box rows">${[70, 52, 64, 40].map((w) => `<div class="box-r"><span class="oct"></span><div class="main"><div class="skel" style="width:${w}%"></div><div class="skel" style="width:${w / 2}%;margin-top:8px"></div></div><div class="skel" style="width:64px"></div></div>`).join("")}</div>`;
+}
+function attention() {
+  const items = [["inbox", "3 Drafts to review", "From Quick Add", "drafts"], ["sparkles", "2 Suggested Schedules", "Netflix, Airtel", "suggested"], ["credit-card", "HDFC Regalia bill due", "22 Oct", "account"]];
+  return items.map(([i, t, s, go]) => `<a href="#" data-go="${state.variant === "C" ? "inbox" : go}" class="box-r" style="color:var(--fg)">${ic(i)}<div class="main"><div>${t}</div><div class="s">${s}</div></div>${ic("chevron-right")}</a>`).join("");
+}
+function pageBody() {
+  const { hub, tabs } = place(state.page);
+  const v = ia(), p = PAGES[state.page];
+  const isHub = v.hubs?.[hub];
+  const title = state.page === "home" ? `Home<span class="muted">Friday, 16 October</span>` : isHub ? isHub.t : state.page === "account" ? `HDFC Savings<span class="muted">Asset · Savings</span>` : (tabs ? PAGES[tabs[0]].t : p.t);
+  const tabBar = tabs ? `<nav class="utabs">${tabs.map((k) => `<a href="#" data-go="${TAB_T[k] ? "account" : k}" class="${(k === state.page || (state.page === "account" && k === "ledger")) ? "on" : ""}">${PAGES[k] ? ic(PAGES[k].i) : ""}${tabName(k)}${PAGES[k] ? counter(PAGES[k]) : ""}</a>`).join("")}</nav>` : "";
+  const head = `<div class="ph ${tabs ? "flat" : ""}"><h1>${title}</h1>${state.page === "home" ? `<button class="btn">${ic("calendar")} October ${ic("chevron-down")}</button>` : ""}</div>`;
+  if (state.page === "home") {
+    return `${head}<div class="grid2"><div>${holds(p)}</div><aside><div class="box"><div class="box-h"><h3>Needs attention</h3><span class="counter">3</span></div>${attention()}</div></aside></div>`;
+  }
+  return head + tabBar + holds(p);
+}
+
+function desktop() {
+  return `<div class="desk">${header()}${compactNav()}<div class="shell">${sidebar()}<main>${pageBody()}</main></div></div>`;
+}
+
+// ---------- phone ----------
+function mobile() {
+  const v = ia(), { hub, tabs } = place(state.page);
+  const isMore = state.page === "more";
+  const tabKeys = v.mob;
+  const onTab = (k) => k === hub || (k === "more" && !tabKeys.includes(hub) && !hub.startsWith("acct:")) || (k === "accounts" && hub.startsWith("acct:"));
+  const tab = (k) => { const m = meta(k); const lbl = v.mobLabel?.[k] || m.t; const c = m.hot && m.c ? `<b>${m.c}</b>` : ""; return `<a href="#" data-go="${k}" class="${onTab(k) ? "on" : ""}">${ic(m.i)}${lbl}${c}</a>`; };
+  const nested = !tabKeys.includes(hub) && !isMore && hub !== "home" && !hub.startsWith("acct:");
+  const p = PAGES[state.page];
+  const isHub = v.hubs?.[hub];
+  const title = isMore ? "More" : isHub ? isHub.t : state.page === "account" ? "HDFC Savings" : tabs ? PAGES[tabs[0]]?.t : p.t;
+  const bar = `<div class="mbar">${nested || state.page === "account" ? `<button class="back" data-go="${state.page === "account" ? "accounts" : "more"}">${ic("chevron-left")}${state.page === "account" ? "Accounts" : "More"}</button>` : LOGO}
+    <div class="r"><button class="mib" aria-label="Search" data-ov="${v.palette ? "palette" : ""}">${ic("search")}</button>${v.add !== "compose" && !tabKeys.includes("drafts") ? `<button class="mib" data-go="drafts" aria-label="Drafts">${ic("inbox")}<b>3</b></button>` : ""}${v.hubs ? `<button class="mib" data-go="settings" aria-label="Settings">${ic("user")}</button>` : ""}</div></div>`;
+  const chips = tabs ? `<div class="mseg">${tabs.map((k) => `<a href="#" data-go="${TAB_T[k] ? "account" : k}" class="${(k === state.page || (state.page === "account" && k === "ledger")) ? "on" : ""}">${tabName(k)}${PAGES[k] ? counter(PAGES[k]) : ""}</a>`).join("")}</div>` : "";
+  let body;
+  if (isMore) body = moreList();
+  else if (state.page === "accounts" && v.accounts) body = ACCTS.map(([g, list]) => `<div class="msec"><span>${g}</span></div><div class="mcard">${list.map(([n, i, b]) => `<a href="#" data-go="account" class="mrow"><span class="ic">${ic(i)}</span><div class="main"><div class="t">${n}</div></div><span class="num">₹${b}</span>${ic("chevron-right")}</a>`).join("")}</div>`).join("");
+  else body = `${state.page === "home" ? `<div class="msec"><span>Needs attention</span></div><div class="mcard">${attention().replaceAll("box-r", "mrow")}</div>` : ""}<div class="msec"><span>What this page holds</span></div><div class="mcard mholds"><ul>${p.holds.map((x) => `<li>${x}</li>`).join("")}</ul>${p.note ? `<div class="note">${p.note}</div>` : ""}</div>`;
+  return `<div class="mob">${bar}<div class="mtitle"><h1>${title}</h1>${state.page === "home" ? "<div>Friday, 16 October</div>" : ""}</div>${chips}${body}</div>
+    <nav class="mtabs">${tab(tabKeys[0])}${tab(tabKeys[1])}<button class="plus" data-ov="add" aria-label="Add"><span>${ic("plus")}</span></button>${tab(tabKeys[2])}${tab(tabKeys[3])}</nav>`;
+}
+function moreList() {
+  const v = ia(), shown = new Set(v.mob);
+  let groups;
+  if (v.more) groups = [["Plan", ["schedules", "subscriptions", "forecast", "goals"]], ["Money", ["investments", "prices", "reports"]], ["Manage", ["budgets", "imports", "parties", "tags", "settings"]]];
+  else if (v.accounts) groups = [["Plan", ["drafts", "budgets", "schedules", "goals", "reports"]], ["Manage", v.foot]];
+  else groups = v.side.map(([g, k]) => [g, k]);
+  const row = (k) => { const m = PAGES[k]; return `<a href="#" data-go="${k}" class="mrow"><span class="ic">${ic(m.i)}</span><div class="main"><div class="t">${m.t}</div></div>${counter(m)}${ic("chevron-right")}</a>`; };
+  return groups.map(([g, keys]) => { const ks = keys.filter((k) => !shown.has(k)); return ks.length ? `<div class="msec"><span>${g}</span></div><div class="mcard">${ks.map(row).join("")}</div>` : ""; }).join("");
+}
+
+// ---------- overlays ----------
+function palette() {
+  const all = Object.entries(PAGES).filter(([k]) => k !== "account" && (state.variant === "C" || k !== "inbox"));
+  const actions = [["New transaction", "plus", "N"], ["Quick Add", "sparkles", "Q"], ["Import a bank file", "file-up", ""], ["Reconcile an Account", "check-check", ""], ["Toggle Privacy Mode", "eye-off", ""]];
+  const q = state.q.toLowerCase();
+  const m = (s) => s.toLowerCase().includes(q);
+  const acts = actions.filter(([t]) => m(t));
+  const pages = all.filter(([, p]) => m(p.t));
+  const accts = ACCTS.flatMap(([, l]) => l).filter(([n]) => q && m(n));
+  return `<div class="scrim" data-ov=""></div><div class="pal" role="dialog" aria-label="Command palette">
+    <div class="pi">${ic("search")}<input data-pal placeholder="Jump to a page, an Account, or do something" value="${state.q}" autofocus></div>
+    <div class="pl">${acts.length ? `<h5>Actions</h5>${acts.map(([t, i, k], n) => `<a href="#" class="${n ? "" : "hi"}" ${t === "Quick Add" ? `data-ov="add"` : ""}>${ic(i)}${t}${k ? `<span class="muted"><kbd>${k}</kbd></span>` : ""}</a>`).join("")}` : ""}
+      ${pages.length ? `<h5>Pages</h5>${pages.map(([k, p]) => `<a href="#" data-go="${k}">${ic(p.i)}${p.t}${counter(p)}</a>`).join("")}` : ""}
+      ${accts.length ? `<h5>Accounts</h5>${accts.map(([n, i]) => `<a href="#" data-go="account">${ic(i)}${n}</a>`).join("")}` : ""}
+      ${q ? `<h5>Transactions</h5><a href="#" data-go="transactions">${ic("search")}Search Transactions for “${state.q}”</a>` : ""}</div>
+    <div class="pf"><span><kbd>↑</kbd> <kbd>↓</kbd> move</span><span><kbd>Enter</kbd> open</span><span><kbd>Esc</kbd> close</span></div></div>`;
+}
+function addSheet() {
+  return `<div class="scrim" data-ov=""></div><section class="msheet" role="dialog" aria-label="Add"><div class="grab"></div>
+    <h3>${state.variant === "C" ? "Quick Add" : "Add"}</h3>
+    <div class="compose"><textarea placeholder="lunch at Toit 850 on hdfc card" aria-label="Quick Add" autofocus></textarea>
+      <div class="bar"><span class="muted" style="font-size:13px">${ic("sparkles")} Becomes a Draft</span><button class="btn primary">Add</button></div></div>
+    <div class="alt"><a href="#" data-act="tx">${ic("pencil")} <span>Enter by hand</span></a><a href="#" data-go="imports">${ic("file-up")} <span>Import a bank file</span></a></div></section>`;
+}
+function overlay() {
+  if (state.overlay === "palette") return palette();
+  if (state.overlay === "add") return addSheet();
+  return "";
+}
+
+// ---------- shell ----------
+function sync() {
+  const p = new URLSearchParams({ variant: state.variant, page: state.page });
+  if (state.theme !== "system") p.set("theme", state.theme);
+  history.replaceState(null, "", "?" + p);
+}
+function render() {
+  const root = document.documentElement;
+  if (state.theme === "system") delete root.dataset.theme; else root.dataset.theme = state.theme;
+  if (!PAGES[state.page] && state.page !== "more" && !ia().hubs?.[state.page]) state.page = "home";
+  // A hub with tabs has no page of its own: land on its first tab.
+  const hubDef = ia().hubs?.[state.page];
+  if (hubDef) state.page = hubDef.tabs[0];
+  if (state.page === "more" && !ia().mob.includes("more")) state.page = "home";
+  document.getElementById("app").innerHTML = desktop() + mobile() + overlay();
+  window.lucide?.createIcons();
+  const themes = { system: "Auto", light: "Light", dark: "Dark" };
+  const { hub } = place(state.page);
+  document.getElementById("proto").innerHTML = `
+    <button data-p="prev" aria-label="Previous variant">‹</button>
+    <select data-p="pick" aria-label="Variant">${Object.entries(VARIANTS).map(([k, n]) => `<option value="${k}" ${k === state.variant ? "selected" : ""}>${k}: ${n}</option>`).join("")}</select>
+    <button data-p="next" aria-label="Next variant">›</button>
+    <span class="sep"></span><span class="st">${meta(hub.startsWith("acct:") ? "accounts" : hub).t} › ${state.page === "more" ? "More" : PAGES[state.page].t}</span>
+    <span class="sep"></span><button data-p="theme">${themes[state.theme]}</button>`;
+  document.querySelector(".mseg a.on")?.scrollIntoView({ inline: "center", block: "nearest" });
+  document.querySelector("[data-pal]")?.focus();
+  const pi = document.querySelector("[data-pal]"); if (pi) pi.setSelectionRange(pi.value.length, pi.value.length);
+  sync();
+}
+function go(page) { state.page = page; state.overlay = null; state.q = ""; render(); scrollTo(0, 0); }
+function cycle(step) {
+  const keys = Object.keys(VARIANTS);
+  state.variant = keys[(keys.indexOf(state.variant) + step + keys.length) % keys.length];
+  state.overlay = null;
+  render();
+}
+
+document.addEventListener("change", (e) => {
+  if (e.target.dataset.p === "pick") { state.variant = e.target.value; state.overlay = null; render(); e.target.blur(); }
+});
+document.addEventListener("input", (e) => {
+  if (e.target.matches("[data-pal]")) { state.q = e.target.value; render(); }
+});
+document.addEventListener("click", (e) => {
+  const a = e.target.closest("a[href='#']"); if (a) e.preventDefault();
+  const p = e.target.closest("button[data-p]")?.dataset.p;
+  if (p === "prev") return cycle(-1);
+  if (p === "next") return cycle(1);
+  if (p === "theme") { state.theme = { system: "light", light: "dark", dark: "system" }[state.theme]; return render(); }
+  const g = e.target.closest("[data-go]"); if (g) return go(g.dataset.go);
+  const ov = e.target.closest("[data-ov]");
+  if (ov) { const want = ov.dataset.ov || null; state.overlay = state.overlay === want ? null : want; state.q = ""; return render(); }
+  if (e.target.closest("[data-act=tx]")) { state.overlay = null; render(); alert("The New transaction form is decided in \"How does entering a Transaction feel?\""); return; }
+  if (state.overlay === "new" || state.overlay === "avatar") { state.overlay = null; render(); }
+});
+document.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k" && ia().palette) { e.preventDefault(); state.overlay = state.overlay === "palette" ? null : "palette"; state.q = ""; return render(); }
+  if (e.key === "Escape" && state.overlay) { state.overlay = null; return render(); }
+  if (e.target.closest("input, textarea, select, [contenteditable]")) return;
+  if (e.key === "ArrowLeft") cycle(-1);
+  if (e.key === "ArrowRight") cycle(1);
+  if (e.key.toLowerCase() === "q") { e.preventDefault(); if (state.variant === "C" && innerWidth > 760) document.querySelector("[data-qa]")?.focus(); else { state.overlay = "add"; render(); } }
+  if (e.key === "/" && !ia().palette) { e.preventDefault(); document.querySelector(".hdr .search input")?.focus(); }
+});
+render();
+</script>
+</body>
+</html>
