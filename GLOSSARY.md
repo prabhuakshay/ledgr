@@ -41,11 +41,27 @@ What an Asset or Liability Account holds now: its Opening Balance moved by every
 _Avoid_: Total, net
 
 **Reconciliation**:
-The user's check that an Asset or Liability Account's Balance on a given day matches what the bank or card issuer says it held that day. It is recorded only when the two match, and every Split into or out of that Account dated on or before that day then counts as reconciled. A later change can move the Balance on that day, such as editing or back-dating a Transaction; the Reconciliation then no longer matches and shows how far off it is until the user fixes the difference or deletes it. The latest matching one gives the Account's reconciled-through date. Every Reconciliation is kept.
+The user's check that an Asset or Liability Account's Balance on a given day matches what the bank or card issuer says it held that day. It is recorded only when the two match, and every Split into or out of that Account dated on or before that day then counts as reconciled. A later change can move the Balance on that day, such as editing or back-dating a Transaction; the Reconciliation then no longer matches and shows how far off it is until the user fixes the difference or deletes it. The latest matching one gives the Account's reconciled-through date. Every Reconciliation is kept. A Valued Account is never Reconciled.
 _Avoid_: Confirm, verify, audit, cleared
 
+**Valued Account**:
+An Asset Account for something the user owns whose worth they estimate rather than count, such as a house, a car or land. Its Balance is the money that went into it; what it is worth is its Value.
+_Avoid_: Property, physical asset, fixed asset
+
+**Valuation**:
+One dated estimate the user records of what a Valued Account is worth, with an optional note on where it came from. It never moves money.
+_Avoid_: Appraisal, revaluation, mark
+
+**Term Deposit**:
+An Asset Account for money placed with a bank for a fixed term at a fixed rate: an FD, or an RD paid into each month by a Schedule. It either compounds its interest until maturity, when the interest is proposed as a Draft paid into it, or pays its interest out to another Asset Account as it is earned. At maturity the user pays it out or renews it. Being a Term Deposit is chosen when the Account is created and never changes.
+_Avoid_: FD, RD, Deposit, fixed deposit
+
+**Value**:
+What a Valued Account or Term Deposit is worth on a given day. For a Valued Account it is the latest Valuation on or before that day plus the money moved into or out of it since, or its Balance before any Valuation. For a Term Deposit it is its Balance plus the interest earned but not yet posted.
+_Avoid_: Worth, current value, Market Value (that is for Holdings)
+
 **Net Worth**:
-What the user owns minus what they owe on a given day: the Balances of Asset Accounts minus the Balances of Liability Accounts, leaving out any Account the user has excluded from it, such as a car. An Investment Account counts at its Market Value, not its Balance.
+What the user owns minus what they owe on a given day: the Balances of Asset Accounts minus the Balances of Liability Accounts, leaving out any Account the user has excluded from it, such as the home they live in. An Investment Account counts at its Market Value, and a Valued Account or Term Deposit at its Value, not its Balance.
 _Avoid_: Wealth, total balance, equity
 
 **Transaction**:
@@ -69,7 +85,7 @@ A short line of free text the user writes about a money event, such as "lunch at
 _Avoid_: Prompt, quick entry, note
 
 **Draft**:
-A Transaction not yet posted, which the AI proposed from a Quick Add, a Schedule proposed on its due date, a credit card's Statement proposed as its payment, a Card EMI proposed for the interest, GST and fees billed with an installment, an Investment Import proposed for a Buy, Sell or Dividend with no matching Transaction, or the user started by hand as a placeholder. A Draft can carry a Buy, Sell or Dividend; posting it records the Transaction and the linked Investment Event together, and is refused while its units or Amount are missing. Every Draft shows which of these it came from. It needs only a date until it is posted, so it can wait for an amount the user does not know yet. It touches no Balance until the user posts it. The user can edit it and save it still waiting, gaps and all, or save and post it in one go, which is refused while anything is missing; the user can also Discard it. A Draft dated after today can be posted early on its own, and is then recorded on today's date; posting several Drafts at once is refused unless every one is complete, not an estimate, and dated today or earlier.
+A Transaction not yet posted, which the AI proposed from a Quick Add, a Schedule proposed on its due date, a credit card's Statement proposed as its payment, a Card EMI proposed for the interest, GST and fees billed with an installment or with its foreclosure, a Term Deposit proposed for its interest at maturity, an Investment Import proposed for a Buy, Sell or Dividend with no matching Transaction, or the user started by hand as a placeholder. A Draft can carry a Buy, Sell or Dividend; posting it records the Transaction and the linked Investment Event together, and is refused while its units or Amount are missing. Every Draft shows which of these it came from. It needs only a date until it is posted, so it can wait for an amount the user does not know yet. It touches no Balance until the user posts it. The user can edit it and save it still waiting, gaps and all, or save and post it in one go, which is refused while anything is missing; the user can also Discard it. A Draft dated after today can be posted early on its own, and is then recorded on today's date; posting several Drafts at once is refused unless every one is complete, not an estimate, and dated today or earlier.
 _Avoid_: Pending transaction, suggestion, draft entry
 
 **Processing**:
@@ -129,7 +145,7 @@ The Balances ledgr expects each Asset and Liability Account to have on each of t
 _Avoid_: Projection, cash flow, prediction
 
 **Low-Balance Threshold**:
-The floor below which the user wants a warning on an Asset Account, now or when the Forecast expects its Balance to fall below it. It is ₹0 unless the user raises it, so an Asset Account always warns before going below zero. Liability Accounts have none; a credit card has a Credit Limit instead.
+The floor below which the user wants a warning on an Asset Account, now or when the Forecast expects its Balance to fall below it. It is ₹0 unless the user raises it, so an Asset Account always warns before going below zero. Valued Accounts, Term Deposits and Liability Accounts have none; a credit card has a Credit Limit instead.
 _Avoid_: Minimum balance, alert level
 
 **Credit Limit**:
@@ -137,7 +153,7 @@ The most a credit card's issuer lets the user owe on it. The card shows how much
 _Avoid_: Card limit, threshold, ceiling, sanctioned amount
 
 **Card EMI**:
-A purchase on a credit card that the bank bills in equal monthly installments, with interest, instead of all at once. The whole purchase counts as spent the day it was made; only the installments reach each Statement Amount. It can be foreclosed by paying off the rest early.
+A purchase on a credit card that the bank bills in equal monthly installments, with interest, instead of all at once. The whole purchase counts as spent the day it was made; only the installments reach each Statement Amount. The bank adds GST to its interest, processing fee and foreclosure fee. It can be foreclosed by paying off the rest early, which bills the remaining principal and the foreclosure fee on the next Statement.
 _Avoid_: Installment plan, loan, EMI conversion
 
 **Statement Day**:
@@ -149,11 +165,11 @@ The day of the month the amount on a credit card's latest statement must be paid
 _Avoid_: Payment date, deadline
 
 **Statement**:
-One billing period of a credit card, from the day after one Statement Day to the next, with its Due Day and Statement Amount. It is paid once the payments the user posts or records for it add up to its Statement Amount. A payment pays at most one Statement.
+One billing period of a credit card, from the day after one Statement Day to the next, with its Due Day and Statement Amount. It is paid once the payments the user posts or records for it add up to its Statement Amount. A payment pays at most one Statement, and pays the oldest unpaid one unless the user links it elsewhere. A Statement is Upcoming until its Statement Day, Due until its Due Day, then Overdue if anything is still owed; it is Paid once covered, or Nothing to pay when its amount is zero or less.
 _Avoid_: Bill, invoice, cycle
 
 **Statement Amount**:
-What a credit card's latest statement asks the user to pay. ledgr estimates it from the card's spending, payments and refunds in the Statement's period until the user enters the actual amount from the real statement, which then replaces the estimate. A payment linked to an earlier Statement paid for that period, so the estimate leaves it out and takes off the earlier Statement's Carried Credit instead. An estimate is never below zero.
+What a credit card's latest statement asks the user to pay. ledgr estimates it from the card's spending, payments and refunds in the Statement's period until the actual amount from the real statement is known, typed in by the user or read from the statement they upload, which then replaces the estimate. A payment linked to an earlier Statement paid for that period, so the estimate leaves it out and takes off the earlier Statement's Carried Credit instead. An estimate is never below zero.
 _Avoid_: Bill, outstanding, total due
 
 **Carried Credit**:
@@ -217,7 +233,7 @@ The money an Investment Account that Holds Cash has not put into Instruments, as
 _Avoid_: Funds, margin, free balance
 
 **Instrument**:
-Something the user can hold units of, each unit worth a Price: a mutual fund scheme, a stock, an ETF, gold, a bond and the like. It is identified by its ISIN when it has one, and by its name when it does not, such as physical gold. Two Instruments are never the same thing under different names. Something with no units, such as a house or a fixed deposit, is an Asset Account, not an Instrument.
+Something the user can hold units of, each unit worth a Price: a mutual fund scheme, a stock, an ETF, gold, a bond and the like. It is identified by its ISIN when it has one, and by its name when it does not, such as physical gold. Two Instruments are never the same thing under different names. Something with no units, such as a house or a fixed deposit, is a Valued Account or a Term Deposit, not an Instrument.
 _Avoid_: Security, scrip, scheme, ticker, asset
 
 **Price Source**:
@@ -309,7 +325,7 @@ The share of an Asset Account or Holding counted toward a Goal, as a percentage 
 _Avoid_: Earmark, assignment, contribution
 
 **Goal Progress**:
-What a Goal's Allocations are worth now, at Market Value for Holdings and Balance for other Asset Accounts. A fixed-amount Allocation counts for no more than what it is allocated from.
+What a Goal's Allocations are worth now, at Market Value for Holdings, Value for Valued Accounts and Term Deposits, and Balance for other Asset Accounts. A fixed-amount Allocation counts for no more than what it is allocated from.
 _Avoid_: Saved, funded, achieved amount
 
 **Projection**:
